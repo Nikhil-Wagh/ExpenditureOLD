@@ -90,4 +90,7 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <string name="amount_tv">Amount</string>
+    <string name="input_amount">₹ 0.00</string>
+    <string name="description">Description</string>
 </resources>
