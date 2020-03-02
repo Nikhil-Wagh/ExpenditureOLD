@@ -1,10 +1,13 @@
 package com.example.expenditure;
 
+import android.content.ClipData;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -35,12 +38,15 @@ public class ScrollingActivity extends AppCompatActivity {
     private List<Expense> tempExpenses;
     private ExpenseAdapter expenseAdapter;
 
+
     private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrolling);
+
+        isUserLoggedIn();
 
         Log.d(TAG, "onCreate: started");
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -71,6 +77,12 @@ public class ScrollingActivity extends AppCompatActivity {
         });
     }
 
+    private void isUserLoggedIn() {
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        updateUI(currentUser);
+    }
+
     private List<Expense> sampleList() {
         List mList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -85,8 +97,6 @@ public class ScrollingActivity extends AppCompatActivity {
         SaveButton = findViewById(R.id.button_save);
         AmountEditText = findViewById(R.id.editText_Amount);
         DescriptionEditText = findViewById(R.id.editText_Description);
-
-        mAuth = FirebaseAuth.getInstance();
     }
 
     private void initRecyclerView() {
@@ -115,9 +125,34 @@ public class ScrollingActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_sign_out) {
+            signOutUser();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void signOutUser() {
+        FirebaseAuth.getInstance().signOut();
+        updateUI(null);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        isUserLoggedIn();
+    }
+
+    private void updateUI(FirebaseUser currentUser) {
+        if (currentUser == null) {
+            Log.d(TAG, "onStart: no User");
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }
