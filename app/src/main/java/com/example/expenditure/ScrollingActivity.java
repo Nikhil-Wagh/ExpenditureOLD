@@ -1,34 +1,31 @@
 package com.example.expenditure;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class ScrollingActivity extends AppCompatActivity {
 
@@ -46,9 +43,8 @@ public class ScrollingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrolling);
 
-        isUserLoggedIn();
-
         Log.d(TAG, "onCreate: started");
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 //        NestedScrollView content_scrolling = findViewById(R.id.content_scrolling);
@@ -70,11 +66,35 @@ public class ScrollingActivity extends AppCompatActivity {
                 tempExpenses.add(expense);
 
                 int position = tempExpenses.size() - 1;
-                expenseAdapter.notifyItemChanged(position);
-                Log.d(TAG, tempExpenses.toString());
-                Log.d(TAG, "Save Button: Data saved on index: " + position);
+                if (position > 0)
+                    expenseAdapter.notifyItemChanged(position);
+
+                saveExpenseInDB(expense);
             }
         });
+    }
+
+    private void saveExpenseInDB(Expense expense) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db
+                .collection("users")
+                .document("expenses")
+                .collection(expense.getIdToken())
+                .add(expense)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.e(TAG, "saveExpenseInDB: saved successfully: " + documentReference.getId());
+                        Toast.makeText(ScrollingActivity.this, "Your expense saved successfully", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "saveExpenseInDB: saving expense to Firestore failed");
+                        Toast.makeText(ScrollingActivity.this, "Some error occurred", Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     private void isUserLoggedIn() {
