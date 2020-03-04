@@ -17,6 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -25,6 +26,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -83,7 +87,11 @@ public class LoginActivity extends AppCompatActivity {
     private void handleSignInResult(Task<GoogleSignInAccount> task) {
         try {
             GoogleSignInAccount googleSignInAccount = task.getResult(ApiException.class);
-            firebaseAuthWithGoogle(googleSignInAccount);
+            if (googleSignInAccount != null)
+                firebaseAuthWithGoogle(googleSignInAccount);
+            else {
+                Log.e(TAG, "handleSignInResult: googleSignInAccount is null");
+            }
         } catch (ApiException e) {
             Log.w(TAG, "signInResult: failed code=" + e.getStatusCode());
         }
@@ -105,7 +113,31 @@ public class LoginActivity extends AppCompatActivity {
                             Snackbar.make(findViewById(R.id.constraint_layout_activity_login), R.string.login_failed, Snackbar.LENGTH_LONG).show();
                         }
                     }
+                })
+                .continueWith(new Continuation<AuthResult, Object>() {
+
+                    @Override
+                    public Object then(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                                    .build();
+                            db.setFirestoreSettings(settings);
+
+                            getNewUserSnapshot(db);
+                        }
+                        return null;
+                    }
                 });
+    }
+
+    private void getNewUserSnapshot(FirebaseFirestore db) {
+        try {
+            DocumentReference documentReference = db.collection("users").document(firebaseAuth.getCurrentUser().getUid());
+            documentReference.collection("expenses");
+        } catch (NullPointerException e) {
+            Log.e(TAG, "getNewUserSnapshot: collection expenses creation failed");
+        }
     }
 
     @Override
