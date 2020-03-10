@@ -22,9 +22,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ScrollingActivity extends AppCompatActivity {
 
@@ -47,11 +50,10 @@ public class ScrollingActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: started");
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//        NestedScrollView content_scrolling = findViewById(R.id.content_scrolling);
 
         tempExpenses = loadList();
 
-        initRecyclerView();
+        initRecyclerView(tempExpenses);
 
         initComponents();
 
@@ -62,10 +64,10 @@ public class ScrollingActivity extends AppCompatActivity {
                 float amount = Float.valueOf(AmountEditText.getText().toString());
                 String description = DescriptionEditText.getText().toString();
 
-                Expense expense = new Expense((int)System.currentTimeMillis()/1000, amount, description);
+                Expense expense = new Expense((int) System.currentTimeMillis(), amount, description);
                 tempExpenses.add(expense);
 
-                int position = tempExpenses.size() - 1;
+                int position = 0; //tempExpenses.size() - 1;
                 expenseAdapter.notifyItemChanged(position);
                 Log.d(TAG, tempExpenses.toString());
                 Log.d(TAG, "Save Button: Data saved on index: " + position);
@@ -76,8 +78,26 @@ public class ScrollingActivity extends AppCompatActivity {
     }
 
     private List<Expense> loadList() {
-        List<Expense> mList = new ArrayList<>();
-
+        final List<Expense> mList = new ArrayList<>();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users")
+                .document(mAuth.getCurrentUser().getUid())
+                .collection("expenses")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                Map<String, Object> data = documentSnapshot.getData();
+                                Log.d(TAG, documentSnapshot.getId() + " => " + documentSnapshot.getData());
+                                Expense e = new Expense(Integer.parseInt(String.valueOf(data.get("id"))), Float.parseFloat(String.valueOf(data.get("amount"))), data.get("description").toString());
+                                mList.add(e);
+                            }
+                        }
+                    }
+                });
+        Log.d(TAG, "mList : " + mList.toString());
         return mList;
     }
 
@@ -117,7 +137,7 @@ public class ScrollingActivity extends AppCompatActivity {
         DescriptionEditText = findViewById(R.id.editText_Description);
     }
 
-    private void initRecyclerView() {
+    private void initRecyclerView(List<Expense> tempExpenses) {
         RecyclerView recyclerView = findViewById(R.id.recyclerView_Content);
         recyclerView.setHasFixedSize(true);
 
