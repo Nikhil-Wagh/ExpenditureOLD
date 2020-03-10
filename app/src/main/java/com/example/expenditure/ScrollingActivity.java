@@ -1,34 +1,30 @@
 package com.example.expenditure;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class ScrollingActivity extends AppCompatActivity {
 
@@ -53,7 +49,7 @@ public class ScrollingActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 //        NestedScrollView content_scrolling = findViewById(R.id.content_scrolling);
 
-        tempExpenses = sampleList();
+        tempExpenses = loadList();
 
         initRecyclerView();
 
@@ -73,8 +69,38 @@ public class ScrollingActivity extends AppCompatActivity {
                 expenseAdapter.notifyItemChanged(position);
                 Log.d(TAG, tempExpenses.toString());
                 Log.d(TAG, "Save Button: Data saved on index: " + position);
+
+                saveNewExpense(expense);
             }
         });
+    }
+
+    private List<Expense> loadList() {
+        List<Expense> mList = new ArrayList<>();
+
+        return mList;
+    }
+
+    private void saveNewExpense(Expense expense) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db
+                .collection("users")
+                .document(mAuth.getCurrentUser().getUid())
+                .collection("expenses")
+                .add(expense)
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "saveNewExpense: saved successfully");
+                        } else {
+                            Log.d(TAG, "saveNewExpense: failed");
+                        }
+                        if (task.isCanceled()) {
+                            Log.d(TAG, "saveNewExpense: cancelled");
+                        }
+                    }
+                });
     }
 
     private void isUserLoggedIn() {
@@ -83,14 +109,6 @@ public class ScrollingActivity extends AppCompatActivity {
         updateUI(currentUser);
     }
 
-    private List<Expense> sampleList() {
-        List mList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            mList.add(new Expense(0, 20, "Auto"));
-            mList.add(new Expense(1, 200, "Food"));
-        }
-        return mList;
-    }
 
     private void initComponents() {
         Log.d(TAG, "initializing components");
