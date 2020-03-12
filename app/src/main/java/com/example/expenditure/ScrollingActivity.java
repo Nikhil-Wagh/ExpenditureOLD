@@ -17,15 +17,21 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ScrollingActivity extends AppCompatActivity {
 
@@ -47,11 +53,10 @@ public class ScrollingActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//        NestedScrollView content_scrolling = findViewById(R.id.content_scrolling);
 
-        tempExpenses = sampleList();
+        tempExpenses = loadList();
 
-        initRecyclerView();
+        initRecyclerView(tempExpenses);
 
         initComponents();
 
@@ -62,37 +67,61 @@ public class ScrollingActivity extends AppCompatActivity {
                 float amount = Float.valueOf(AmountEditText.getText().toString());
                 String description = DescriptionEditText.getText().toString();
 
-                Expense expense = new Expense((int)System.currentTimeMillis()/1000, amount, description);
+                Expense expense = new Expense((int) System.currentTimeMillis(), amount, description);
                 tempExpenses.add(expense);
 
-                int position = tempExpenses.size() - 1;
-                if (position > 0)
-                    expenseAdapter.notifyItemChanged(position);
+                int position = 0; //tempExpenses.size() - 1;
+                expenseAdapter.notifyItemChanged(position);
+                Log.d(TAG, tempExpenses.toString());
+                Log.d(TAG, "Save Button: Data saved on index: " + position);
 
-                saveExpenseInDB(expense);
+                saveNewExpense(expense);
             }
         });
     }
 
-    private void saveExpenseInDB(Expense expense) {
+    private List<Expense> loadList() {
+        final List<Expense> mList = new ArrayList<>();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users")
+                .document(mAuth.getCurrentUser().getUid())
+                .collection("expenses")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                Map<String, Object> data = documentSnapshot.getData();
+                                Log.d(TAG, documentSnapshot.getId() + " => " + documentSnapshot.getData());
+                                Expense e = new Expense(Integer.parseInt(String.valueOf(data.get("id"))), Float.parseFloat(String.valueOf(data.get("amount"))), data.get("description").toString());
+                                mList.add(e);
+                            }
+                        }
+                    }
+                });
+        Log.d(TAG, "mList : " + mList.toString());
+        return mList;
+    }
+
+    private void saveNewExpense(Expense expense) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db
                 .collection("users")
-                .document("expenses")
-                .collection(expense.getIdToken())
+                .document(mAuth.getCurrentUser().getUid())
+                .collection("expenses")
                 .add(expense)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.e(TAG, "saveExpenseInDB: saved successfully: " + documentReference.getId());
-                        Toast.makeText(ScrollingActivity.this, "Your expense saved successfully", Toast.LENGTH_LONG).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "saveExpenseInDB: saving expense to Firestore failed");
-                        Toast.makeText(ScrollingActivity.this, "Some error occurred", Toast.LENGTH_LONG).show();
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "saveNewExpense: saved successfully");
+                        } else {
+                            Log.d(TAG, "saveNewExpense: failed");
+                        }
+                        if (task.isCanceled()) {
+                            Log.d(TAG, "saveNewExpense: cancelled");
+                        }
                     }
                 });
     }
@@ -103,14 +132,6 @@ public class ScrollingActivity extends AppCompatActivity {
         updateUI(currentUser);
     }
 
-    private List<Expense> sampleList() {
-        List mList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            mList.add(new Expense(0, 20, "Auto"));
-            mList.add(new Expense(1, 200, "Food"));
-        }
-        return mList;
-    }
 
     private void initComponents() {
         Log.d(TAG, "initializing components");
@@ -119,7 +140,7 @@ public class ScrollingActivity extends AppCompatActivity {
         DescriptionEditText = findViewById(R.id.editText_Description);
     }
 
-    private void initRecyclerView() {
+    private void initRecyclerView(List<Expense> tempExpenses) {
         RecyclerView recyclerView = findViewById(R.id.recyclerView_Content);
         recyclerView.setHasFixedSize(true);
 
