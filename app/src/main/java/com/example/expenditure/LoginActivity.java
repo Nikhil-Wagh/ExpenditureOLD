@@ -39,10 +39,10 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         firebaseAuth = FirebaseAuth.getInstance();
         updateUI(firebaseAuth.getCurrentUser());
+
+        super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_login);
 
@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithCredentials: sign in successful");
-                            updateUI(firebaseAuth.getCurrentUser());
+//                            updateUI(firebaseAuth.getCurrentUser());
                         } else {
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Snackbar.make(findViewById(R.id.constraint_layout_activity_login), R.string.login_failed, Snackbar.LENGTH_LONG).show();

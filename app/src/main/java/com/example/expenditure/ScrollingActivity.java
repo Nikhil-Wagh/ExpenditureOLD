@@ -3,12 +3,13 @@ package com.example.expenditure;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,15 +18,15 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -39,7 +40,9 @@ public class ScrollingActivity extends AppCompatActivity {
     private Button SaveButton;
     private EditText AmountEditText, DescriptionEditText;
     private List<Expense> tempExpenses;
-    private ExpenseAdapter expenseAdapter;
+//    private ExpenseAdapter expenseAdapter;
+
+    private FirestoreRecyclerAdapter adapter;
 
 
     private FirebaseAuth mAuth;
@@ -54,33 +57,74 @@ public class ScrollingActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        tempExpenses = loadList();
 
-        initRecyclerView(tempExpenses);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        Query query = db.collection("users").document(mAuth.getCurrentUser().getUid()).collection("expenses");
+
+        FirestoreRecyclerOptions<Expense> options = new FirestoreRecyclerOptions.Builder<Expense>()
+                .setQuery(query,  Expense.class)
+                .build();
+
+        adapter = new FirestoreRecyclerAdapter<Expense, ExpenseViewHolder>(options) {
+            @NonNull
+            @Override
+            public ExpenseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+                View view = layoutInflater.inflate(R.layout.individual_expenditure_layout, parent, false);
+                return new ExpenseViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull ExpenseViewHolder expenseViewHolder, int position, @NonNull Expense expense) {
+                expenseViewHolder.setAmount(expense.getAmount());
+                expenseViewHolder.setDescription(expense.getDescription());
+            }
+        };
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerView_Content);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
 
         initComponents();
 
         SaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "Save Button: Saving data");
+                Log.d(TAG, "Save Button: called");
                 float amount = Float.valueOf(AmountEditText.getText().toString());
                 String description = DescriptionEditText.getText().toString();
 
-                Expense expense = new Expense((int) System.currentTimeMillis(), amount, description);
+                Expense expense = new Expense(amount, description);
                 tempExpenses.add(expense);
 
                 int position = 0; //tempExpenses.size() - 1;
-                expenseAdapter.notifyItemChanged(position);
+//                expenseAdapter.notifyItemChanged(position);
                 Log.d(TAG, tempExpenses.toString());
-                Log.d(TAG, "Save Button: Data saved on index: " + position);
+                Log.d(TAG, "Save Button: List updated on index: " + position);
 
                 saveNewExpense(expense);
             }
         });
     }
 
+    private void initPrivateVariables() {
+        Log.d(TAG, "initializing components");
+        SaveButton = findViewById(R.id.button_save);
+        AmountEditText = findViewById(R.id.editText_Amount);
+        DescriptionEditText = findViewById(R.id.editText_Description);
+
+//        mAuth = FirebaseAuth.getInstance();
+//        if (mAuth == null) updateUI(null);
+
+//        initRecyclerView();
+
+        tempExpenses = loadList();
+    }
+
     private List<Expense> loadList() {
+        Log.d(TAG, "loadList: loading lists");
         final List<Expense> mList = new ArrayList<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users")
@@ -94,8 +138,9 @@ public class ScrollingActivity extends AppCompatActivity {
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                 Map<String, Object> data = documentSnapshot.getData();
                                 Log.d(TAG, documentSnapshot.getId() + " => " + documentSnapshot.getData());
-                                Expense e = new Expense(Integer.parseInt(String.valueOf(data.get("id"))), Float.parseFloat(String.valueOf(data.get("amount"))), data.get("description").toString());
-                                mList.add(e);
+//                              TODO: add a constructor to initialize from map
+                                Expense e = new Expense(Float.parseFloat(String.valueOf(data.get("amount"))), data.get("description").toString());
+                                mList.add(0, e);
                             }
                         }
                     }
@@ -140,16 +185,17 @@ public class ScrollingActivity extends AppCompatActivity {
         DescriptionEditText = findViewById(R.id.editText_Description);
     }
 
-    private void initRecyclerView(List<Expense> tempExpenses) {
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_Content);
-        recyclerView.setHasFixedSize(true);
-
-        expenseAdapter = new ExpenseAdapter(this, tempExpenses);
-        recyclerView.setAdapter(expenseAdapter);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-    }
+//    private void initRecyclerView() {
+//
+//        RecyclerView recyclerView = findViewById(R.id.recyclerView_Content);
+//        recyclerView.setHasFixedSize(true);
+//
+//        expenseAdapter = new ExpenseAdapter(this, new ArrayList<Expense>(0));
+//        recyclerView.setAdapter(expenseAdapter);
+//
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerView.setItemAnimator(new DefaultItemAnimator());
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -182,6 +228,15 @@ public class ScrollingActivity extends AppCompatActivity {
         super.onStart();
 
         isUserLoggedIn();
+        adapter.startListening();
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        adapter.stopListening();
     }
 
     private void updateUI(FirebaseUser currentUser) {
