@@ -44,15 +44,14 @@ public class ScrollingActivity extends AppCompatActivity {
 
     private FirestoreRecyclerAdapter adapter;
 
-
     private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrolling);
-
         Log.d(TAG, "onCreate: started");
+        initPrivateVariables();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -87,7 +86,6 @@ public class ScrollingActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        initComponents();
 
         SaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,7 +117,6 @@ public class ScrollingActivity extends AppCompatActivity {
 //        if (mAuth == null) updateUI(null);
 
 //        initRecyclerView();
-
         tempExpenses = loadList();
     }
 
@@ -178,12 +175,12 @@ public class ScrollingActivity extends AppCompatActivity {
     }
 
 
-    private void initComponents() {
-        Log.d(TAG, "initializing components");
-        SaveButton = findViewById(R.id.button_save);
-        AmountEditText = findViewById(R.id.editText_Amount);
-        DescriptionEditText = findViewById(R.id.editText_Description);
-    }
+//    private void initComponents() {
+//        Log.d(TAG, "initializing components");
+//        SaveButton = findViewById(R.id.button_save);
+//        AmountEditText = findViewById(R.id.editText_Amount);
+//        DescriptionEditText = findViewById(R.id.editText_Description);
+//    }
 
 //    private void initRecyclerView() {
 //
