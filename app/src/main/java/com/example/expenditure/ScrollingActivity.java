@@ -41,24 +41,19 @@ public class ScrollingActivity extends AppCompatActivity {
     private List<Expense> tempExpenses;
     private ExpenseAdapter expenseAdapter;
 
-
     private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrolling);
-
         Log.d(TAG, "onCreate: started");
+        initPrivateVariables();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        tempExpenses = loadList();
-
         initRecyclerView(tempExpenses);
-
-        initComponents();
 
         SaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +73,17 @@ public class ScrollingActivity extends AppCompatActivity {
                 saveNewExpense(expense);
             }
         });
+    }
+
+    private void initPrivateVariables() {
+        Log.d(TAG, "initializing components");
+        SaveButton = findViewById(R.id.button_save);
+        AmountEditText = findViewById(R.id.editText_Amount);
+        DescriptionEditText = findViewById(R.id.editText_Description);
+
+        mAuth = FirebaseAuth.getInstance();
+        if (mAuth == null) updateUI(null);
+        tempExpenses = loadList();
     }
 
     private List<Expense> loadList() {
@@ -126,20 +132,6 @@ public class ScrollingActivity extends AppCompatActivity {
                 });
     }
 
-    private void isUserLoggedIn() {
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
-    }
-
-
-    private void initComponents() {
-        Log.d(TAG, "initializing components");
-        SaveButton = findViewById(R.id.button_save);
-        AmountEditText = findViewById(R.id.editText_Amount);
-        DescriptionEditText = findViewById(R.id.editText_Description);
-    }
-
     private void initRecyclerView(List<Expense> tempExpenses) {
         RecyclerView recyclerView = findViewById(R.id.recyclerView_Content);
         recyclerView.setHasFixedSize(true);
@@ -180,8 +172,6 @@ public class ScrollingActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        isUserLoggedIn();
     }
 
     private void updateUI(FirebaseUser currentUser) {
