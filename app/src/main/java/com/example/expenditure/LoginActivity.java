@@ -17,8 +17,6 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
@@ -26,10 +24,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -88,7 +86,11 @@ public class LoginActivity extends AppCompatActivity {
     private void handleSignInResult(Task<GoogleSignInAccount> task) {
         try {
             GoogleSignInAccount googleSignInAccount = task.getResult(ApiException.class);
-            firebaseAuthWithGoogle(googleSignInAccount);
+            if (googleSignInAccount != null)
+                firebaseAuthWithGoogle(googleSignInAccount);
+            else {
+                Log.e(TAG, "handleSignInResult: googleSignInAccount is null");
+            }
         } catch (ApiException e) {
             Log.w(TAG, "signInResult: failed code=" + e.getStatusCode());
         }
@@ -114,39 +116,27 @@ public class LoginActivity extends AppCompatActivity {
                 .continueWith(new Continuation<AuthResult, Object>() {
 
                     @Override
-                    public Object then(@NonNull Task<AuthResult> task) throws Exception {
+                    public Object then(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            getNewUserSnapShot();
-                        } else {
-                            Log.e(TAG, "firebaseAuthWithGoogle: continuation: failed");
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                                    .build();
+                            db.setFirestoreSettings(settings);
+
+                            getNewUserSnapshot(db);
                         }
                         return null;
                     }
                 });
     }
 
-    private void getNewUserSnapShot() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseUser user = firebaseAuth.getCurrentUser();
-
-        Map<String, Object> user_data = new HashMap<>();
-        user_data.put("name", user.getDisplayName());
-        user_data.put("device", android.os.Build.MODEL);
-
-        db.collection("users").document(user.getUid())
-                .set(user_data)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error writing document", e);
-                    }
-                });
+    private void getNewUserSnapshot(FirebaseFirestore db) {
+        try {
+            DocumentReference documentReference = db.collection("users").document(firebaseAuth.getCurrentUser().getUid());
+            documentReference.collection("expenses");
+        } catch (NullPointerException e) {
+            Log.e(TAG, "getNewUserSnapshot: collection expenses creation failed");
+        }
     }
 
     @Override

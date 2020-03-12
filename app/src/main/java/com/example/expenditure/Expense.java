@@ -43,4 +43,8 @@ public class Expense {
     public String toString() {
         return "id: " + this.id + " amount: " + this.amount + " description: " + this.description;
     }
+
+    public String getIdToken() {
+        return Integer.toString(this.id);
+    }
 }
