@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -45,6 +49,8 @@ public class ScrollingActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        initComponents();
+
         RecyclerView recyclerView = findViewById(R.id.expense_list);
 
         FirebaseFirestore db_instance = FirebaseFirestore.getInstance();
@@ -52,8 +58,8 @@ public class ScrollingActivity extends AppCompatActivity {
 
         CollectionReference users_collection = db_instance.collection("users");
         DocumentReference user_doc = users_collection.document(getUserId());
-        CollectionReference user_expenses = user_doc.collection("expenses");
-        Query query = user_expenses.orderBy("timestamp");
+        final CollectionReference user_expenses = user_doc.collection("expenses");
+        Query query = user_expenses.orderBy("timestamp", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<Expense> options = new FirestoreRecyclerOptions.Builder<Expense>()
                 .setQuery(query, Expense.class)
@@ -63,7 +69,6 @@ public class ScrollingActivity extends AppCompatActivity {
             @NonNull
             @Override
             public ExpenseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                Log.d(TAG, "onCreateViewHolder: called");
                 LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
                 View view = layoutInflater.inflate(R.layout.individual_expenditure_layout, parent, false);
                 return new ExpenseViewHolder(view);
@@ -71,6 +76,7 @@ public class ScrollingActivity extends AppCompatActivity {
 
             @Override
             protected void onBindViewHolder(@NonNull ExpenseViewHolder expenseViewHolder, int position, @NonNull Expense expense) {
+                Log.d(TAG, "onBindViewHolder expense = " + expense.toString());
                 expenseViewHolder.setAmount(expense.getAmount());
                 expenseViewHolder.setDescription(expense.getDescription());
                 expenseViewHolder.setTimestamp(expense.getTimestamp());
@@ -79,6 +85,39 @@ public class ScrollingActivity extends AppCompatActivity {
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        SaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float amount = Float.valueOf(AmountEditText.getText().toString());
+                String description = DescriptionEditText.getText().toString();
+                Expense expense = new Expense(amount, description);
+                saveNewExpenseToDB(user_expenses, expense);
+            }
+        });
+    }
+
+    private void saveNewExpenseToDB(CollectionReference user_expenses, Expense expense) {
+        user_expenses.add(expense)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.i(TAG, "Document saved successfully, document reference = " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Show proper alert
+                        Toast.makeText(ScrollingActivity.this, "Error while saving expense", Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    private void initComponents() {
+        SaveButton = findViewById(R.id.button_save);
+        AmountEditText = findViewById(R.id.editText_Amount);
+        DescriptionEditText = findViewById(R.id.editText_Description);
     }
 
     private String getUserId() {

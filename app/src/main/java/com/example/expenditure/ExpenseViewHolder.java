@@ -1,14 +1,19 @@
 package com.example.expenditure;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.Timestamp;
+
+import java.text.DateFormat;
 import java.util.Locale;
 
 public class ExpenseViewHolder extends RecyclerView.ViewHolder {
+    private String TAG = "ExpenseViewHolder";
 
     private TextView textView_amount, textView_description, textView_timestamp;
 
@@ -28,6 +33,11 @@ public class ExpenseViewHolder extends RecyclerView.ViewHolder {
         textView_description.setText(description);
     }
 
-    public void setTimestamp(String timestamp) { textView_timestamp.setText(timestamp);}
+//  d MMM yyyy HH:mm:ss
+    public void setTimestamp(Timestamp timestamp) {
+//        String pattern = "d MMMMM yyyy HH:mm:ss";
+        Log.d(TAG, "timestamp = " + timestamp);
+        textView_timestamp.setText(DateFormat.getDateTimeInstance().format(timestamp.getSeconds()));
+    }
 
 }
