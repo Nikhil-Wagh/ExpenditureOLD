@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +29,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -39,10 +43,10 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         firebaseAuth = FirebaseAuth.getInstance();
         updateUI(firebaseAuth.getCurrentUser());
+
+        super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_login);
 
@@ -106,7 +110,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithCredentials: sign in successful");
-                            updateUI(firebaseAuth.getCurrentUser());
+//                            updateUI(firebaseAuth.getCurrentUser());
                         } else {
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Snackbar.make(findViewById(R.id.constraint_layout_activity_login), R.string.login_failed, Snackbar.LENGTH_LONG).show();
@@ -131,9 +135,25 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getNewUserSnapshot(FirebaseFirestore db) {
+        Map<String, String> meta_data = new HashMap<>();
+        meta_data.put("username", firebaseAuth.getCurrentUser().getDisplayName());
+        meta_data.put("device", android.os.Build.MODEL);
         try {
             DocumentReference documentReference = db.collection("users").document(firebaseAuth.getCurrentUser().getUid());
-            documentReference.collection("expenses");
+            documentReference
+                    .set(meta_data)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "getNewUserSnapshot: meta_data added");
+                                Toast.makeText(LoginActivity.this, "Sucess", Toast.LENGTH_LONG).show();
+                                updateUI(firebaseAuth.getCurrentUser());
+                            } else {
+                                Log.d(TAG, "getNewUserSnapshot: meta_data failed");
+                            }
+                        }
+                    });
         } catch (NullPointerException e) {
             Log.e(TAG, "getNewUserSnapshot: collection expenses creation failed");
         }

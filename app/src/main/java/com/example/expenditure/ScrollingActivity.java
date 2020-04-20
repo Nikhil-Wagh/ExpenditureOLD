@@ -3,9 +3,11 @@ package com.example.expenditure;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -13,33 +15,28 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.google.firebase.firestore.Query;
 
 public class ScrollingActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity";
     private Button SaveButton;
     private EditText AmountEditText, DescriptionEditText;
-    private List<Expense> tempExpenses;
-    private ExpenseAdapter expenseAdapter;
+
+    private FirestoreRecyclerAdapter adapter;
 
     private FirebaseAuth mAuth;
 
@@ -48,99 +45,89 @@ public class ScrollingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrolling);
         Log.d(TAG, "onCreate: started");
-        initPrivateVariables();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        initRecyclerView(tempExpenses);
+        initComponents();
+
+        RecyclerView recyclerView = findViewById(R.id.expense_list);
+
+        FirebaseFirestore db_instance = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+
+        CollectionReference users_collection = db_instance.collection("users");
+        DocumentReference user_doc = users_collection.document(getUserId());
+        final CollectionReference user_expenses = user_doc.collection("expenses");
+        Query query = user_expenses.orderBy("timestamp", Query.Direction.DESCENDING);
+
+        FirestoreRecyclerOptions<Expense> options = new FirestoreRecyclerOptions.Builder<Expense>()
+                .setQuery(query, Expense.class)
+                .build();
+
+        adapter = new FirestoreRecyclerAdapter<Expense, ExpenseViewHolder>(options) {
+            @NonNull
+            @Override
+            public ExpenseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+                View view = layoutInflater.inflate(R.layout.individual_expenditure_layout, parent, false);
+                return new ExpenseViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull ExpenseViewHolder expenseViewHolder, int position, @NonNull Expense expense) {
+                Log.d(TAG, "onBindViewHolder expense = " + expense.toString());
+                expenseViewHolder.setAmount(expense.getAmount());
+                expenseViewHolder.setDescription(expense.getDescription());
+                expenseViewHolder.setTimestamp(expense.getTimestamp());
+            }
+        };
+
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         SaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "Save Button: Saving data");
                 float amount = Float.valueOf(AmountEditText.getText().toString());
                 String description = DescriptionEditText.getText().toString();
-
-                Expense expense = new Expense((int) System.currentTimeMillis(), amount, description);
-                tempExpenses.add(expense);
-
-                int position = 0; //tempExpenses.size() - 1;
-                expenseAdapter.notifyItemChanged(position);
-                Log.d(TAG, tempExpenses.toString());
-                Log.d(TAG, "Save Button: Data saved on index: " + position);
-
-                saveNewExpense(expense);
+                Expense expense = new Expense(amount, description);
+                saveNewExpenseToDB(user_expenses, expense);
             }
         });
     }
 
-    private void initPrivateVariables() {
-        Log.d(TAG, "initializing components");
+    private void saveNewExpenseToDB(CollectionReference user_expenses, Expense expense) {
+        user_expenses.add(expense)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.i(TAG, "Document saved successfully, document reference = " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Show proper alert
+                        Toast.makeText(ScrollingActivity.this, "Error while saving expense", Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    private void initComponents() {
         SaveButton = findViewById(R.id.button_save);
         AmountEditText = findViewById(R.id.editText_Amount);
         DescriptionEditText = findViewById(R.id.editText_Description);
+    }
 
+    private String getUserId() {
+        return mAuth.getCurrentUser().getUid();
+    }
+
+    private void isUserLoggedIn() {
         mAuth = FirebaseAuth.getInstance();
-        if (mAuth == null) updateUI(null);
-        tempExpenses = loadList();
-    }
-
-    private List<Expense> loadList() {
-        final List<Expense> mList = new ArrayList<>();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("users")
-                .document(mAuth.getCurrentUser().getUid())
-                .collection("expenses")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                Map<String, Object> data = documentSnapshot.getData();
-                                Log.d(TAG, documentSnapshot.getId() + " => " + documentSnapshot.getData());
-                                Expense e = new Expense(Integer.parseInt(String.valueOf(data.get("id"))), Float.parseFloat(String.valueOf(data.get("amount"))), data.get("description").toString());
-                                mList.add(e);
-                            }
-                        }
-                    }
-                });
-        Log.d(TAG, "mList : " + mList.toString());
-        return mList;
-    }
-
-    private void saveNewExpense(Expense expense) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db
-                .collection("users")
-                .document(mAuth.getCurrentUser().getUid())
-                .collection("expenses")
-                .add(expense)
-                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentReference> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "saveNewExpense: saved successfully");
-                        } else {
-                            Log.d(TAG, "saveNewExpense: failed");
-                        }
-                        if (task.isCanceled()) {
-                            Log.d(TAG, "saveNewExpense: cancelled");
-                        }
-                    }
-                });
-    }
-
-    private void initRecyclerView(List<Expense> tempExpenses) {
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_Content);
-        recyclerView.setHasFixedSize(true);
-
-        expenseAdapter = new ExpenseAdapter(this, tempExpenses);
-        recyclerView.setAdapter(expenseAdapter);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        updateUI(currentUser);
     }
 
     @Override
@@ -172,6 +159,17 @@ public class ScrollingActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+//        isUserLoggedIn();
+        adapter.startListening();
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        adapter.stopListening();
     }
 
     private void updateUI(FirebaseUser currentUser) {

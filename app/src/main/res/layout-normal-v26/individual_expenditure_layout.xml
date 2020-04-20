@@ -27,11 +27,10 @@
                 app:layout_constraintStart_toStartOf="parent">
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/textView_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/amount_tv"
-
+                    android:text="Description"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -39,7 +38,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/textView_Amount"
+                    android:id="@+id/textView_amount"
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:gravity="right"
@@ -57,12 +56,12 @@
                 android:layout_below="@+id/layout_AmountInput">
 
                 <TextView
-                    android:id="@+id/textView_Description"
-                    android:layout_width="match_parent"
+                    android:id="@+id/textView_timestamp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/description"
                     android:inputType="textAutoCorrect"
-                    />
+                    app:layout_constraintEnd_toEndOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </RelativeLayout>

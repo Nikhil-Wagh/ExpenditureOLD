@@ -1,23 +1,22 @@
 package com.example.expenditure;
 
+import com.google.firebase.Timestamp;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class Expense {
 
-    private int id;
+    private Timestamp timestamp;
     private float amount;
     private String description;
 
-    public Expense(int id, float amount, String description){
-        this.id = id;
+    public Expense() { timestamp = Timestamp.now(); }
+
+    public Expense(float amount, String description){
+        this.timestamp = Timestamp.now();
         this.amount = amount;
         this.description = description;
-    }
-
-    public Expense() {
-        this.id = 0;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public float getAmount() {
@@ -28,23 +27,15 @@ public class Expense {
         return description;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setAmount(float amount) {
-        this.amount = amount;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public Timestamp getTimestamp() {
+        return timestamp;
     }
 
     public String toString() {
-        return "id: " + this.id + " amount: " + this.amount + " description: " + this.description;
-    }
-
-    public String getIdToken() {
-        return Integer.toString(this.id);
+        Map<String, Object> objectMap = new HashMap<>();
+        objectMap.put("timestamp", this.timestamp);
+        objectMap.put("amount", this.amount);
+        objectMap.put("description", this.description);
+        return objectMap.toString();
     }
 }
