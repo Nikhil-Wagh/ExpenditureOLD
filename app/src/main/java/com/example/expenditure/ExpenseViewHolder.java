@@ -10,13 +10,14 @@ import java.util.Locale;
 
 public class ExpenseViewHolder extends RecyclerView.ViewHolder {
 
-    private TextView textView_amount, textView_description;
+    private TextView textView_amount, textView_description, textView_timestamp;
 
     public ExpenseViewHolder(@NonNull View itemView) {
         super(itemView);
 
-        textView_amount = itemView.findViewById(R.id.textView_Amount);
-        textView_description = itemView.findViewById(R.id.textView_Description);
+        textView_amount = itemView.findViewById(R.id.textView_amount);
+        textView_description = itemView.findViewById(R.id.textView_description);
+        textView_timestamp = itemView.findViewById(R.id.textView_timestamp);
     }
 
     public void setAmount(float amount) {
@@ -26,4 +27,7 @@ public class ExpenseViewHolder extends RecyclerView.ViewHolder {
     public void setDescription(String description) {
         textView_description.setText(description);
     }
+
+    public void setTimestamp(String timestamp) { textView_timestamp.setText(timestamp);}
+
 }

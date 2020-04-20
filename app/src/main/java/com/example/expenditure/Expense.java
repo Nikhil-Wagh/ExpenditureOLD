@@ -27,19 +27,15 @@ public class Expense {
         return description;
     }
 
-    public void setAmount(float amount) {
-        this.amount = amount;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String toString() {
         Map<String, Object> objectMap = new HashMap<>();
         objectMap.put("timestamp", this.timestamp);
         objectMap.put("amount", this.amount);
         objectMap.put("description", this.description);
         return objectMap.toString();
+    }
+
+    public String getTimestamp() {
+        return timestamp.toString();
     }
 }

@@ -43,7 +43,7 @@
         <!--    TODO: This paddingBottom will not work for every device    -->
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_Content"
+            android:id="@+id/expense_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
