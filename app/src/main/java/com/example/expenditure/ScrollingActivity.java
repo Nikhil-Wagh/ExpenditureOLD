@@ -1,5 +1,7 @@
 package com.example.expenditure;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,7 +11,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,7 +28,6 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -30,11 +35,18 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
+
 public class ScrollingActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity";
     private Button SaveButton;
+    ImageButton EditTimestampButton;
     private EditText AmountEditText, DescriptionEditText;
+    private TextView TimestampTextView;
 
     private FirestoreRecyclerAdapter adapter;
 
@@ -76,7 +88,7 @@ public class ScrollingActivity extends AppCompatActivity {
 
             @Override
             protected void onBindViewHolder(@NonNull ExpenseViewHolder expenseViewHolder, int position, @NonNull Expense expense) {
-                Log.d(TAG, "onBindViewHolder expense = " + expense.toString());
+//                Log.d(TAG, "onBindViewHolder expense = " + expense.toString());
                 expenseViewHolder.setAmount(expense.getAmount());
                 expenseViewHolder.setDescription(expense.getDescription());
                 expenseViewHolder.setTimestamp(expense.getTimestamp());
@@ -89,12 +101,50 @@ public class ScrollingActivity extends AppCompatActivity {
         SaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // TODO: validate inputs
                 float amount = Float.valueOf(AmountEditText.getText().toString());
                 String description = DescriptionEditText.getText().toString();
-                Expense expense = new Expense(amount, description);
+                String str_timestamp = TimestampTextView.getText().toString();
+                Date timestamp = null;
+                try {
+                    timestamp = DateFormat.getDateTimeInstance().parse(str_timestamp);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Expense expense = new Expense(amount, description, timestamp);
+                Log.d(TAG, "expense = " + expense.toString());
                 saveNewExpenseToDB(user_expenses, expense);
+                // TODO: Clear responses
             }
         });
+
+        EditTimestampButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setDateTimeFromPicker();
+            }
+        });
+    }
+
+    public Calendar setDateTimeFromPicker() {
+        final Calendar date;
+        final Calendar currentDate = Calendar.getInstance();
+        date = Calendar.getInstance();
+        new DatePickerDialog(ScrollingActivity.this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                date.set(year, monthOfYear, dayOfMonth);
+                new TimePickerDialog(ScrollingActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        date.set(Calendar.MINUTE, minute);
+                        TimestampTextView.setText(DateFormat.getDateTimeInstance().format(date.getTime()));
+                    }
+                }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), false).show();
+            }
+        }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
+        return date;
     }
 
     private void saveNewExpenseToDB(CollectionReference user_expenses, Expense expense) {
@@ -118,6 +168,9 @@ public class ScrollingActivity extends AppCompatActivity {
         SaveButton = findViewById(R.id.button_save);
         AmountEditText = findViewById(R.id.editText_Amount);
         DescriptionEditText = findViewById(R.id.editText_Description);
+        EditTimestampButton = findViewById(R.id.button_EditTimestamp);
+        TimestampTextView = findViewById(R.id.textView_Timestamp);
+        TimestampTextView.setText(DateFormat.getDateTimeInstance().format(new Date()));
     }
 
     private String getUserId() {

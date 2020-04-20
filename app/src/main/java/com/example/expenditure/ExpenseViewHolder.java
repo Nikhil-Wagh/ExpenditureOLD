@@ -1,6 +1,5 @@
 package com.example.expenditure;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -33,11 +32,8 @@ public class ExpenseViewHolder extends RecyclerView.ViewHolder {
         textView_description.setText(description);
     }
 
-//  d MMM yyyy HH:mm:ss
     public void setTimestamp(Timestamp timestamp) {
-//        String pattern = "d MMMMM yyyy HH:mm:ss";
-        Log.d(TAG, "timestamp = " + timestamp);
-        textView_timestamp.setText(DateFormat.getDateTimeInstance().format(timestamp.getSeconds()));
+        textView_timestamp.setText(DateFormat.getDateTimeInstance().format(timestamp.toDate()));
     }
 
 }
