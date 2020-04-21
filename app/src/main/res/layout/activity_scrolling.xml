@@ -39,6 +39,7 @@
         android:layout_height="match_parent"
         app:layout_anchorGravity="center"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:background="@color/primary_light"
         android:paddingBottom="130dp">
         <!--    TODO: This paddingBottom will not work for every device    -->
 

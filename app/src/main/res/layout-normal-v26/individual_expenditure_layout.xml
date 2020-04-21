@@ -11,14 +11,17 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="8dp"
-        android:layout_marginHorizontal="16dp">
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="16dp">
 
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp">
+            android:layout_margin="2dp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_AmountInput"
@@ -28,12 +31,13 @@
 
                 <TextView
                     android:id="@+id/textView_description"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Description"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/textView_amount"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,6 +48,7 @@
                     android:gravity="right"
                     android:textSize="16sp"
                     android:textStyle="bold"
+                    android:textColor="@color/accent"
                     android:text="₹ 0.00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -59,8 +64,7 @@
                     android:id="@+id/textView_timestamp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="@string/description"
-                    android:inputType="textAutoCorrect"
+                    android:text="timestamp"
                     app:layout_constraintEnd_toEndOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

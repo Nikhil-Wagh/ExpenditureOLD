@@ -11,8 +11,8 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:elevation="@dimen/cardview_default_elevation"
+        android:layout_margin="8dp"
+        android:elevation="@dimen/cardview_elevation"
         app:cardCornerRadius="@dimen/cardview_radius">
 
         <RelativeLayout
@@ -32,7 +32,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:text="@string/amount_tv"
-
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -80,13 +79,18 @@
                 android:id="@+id/layout_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/layout_description">
+                android:layout_below="@id/layout_description"
+                android:layout_marginBottom="4dp">
 
                 <Button
                     android:id="@+id/button_save"
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:text="Save"
+                    android:background="@drawable/button"
+                    android:minHeight="40dp"
+                    android:textColor="@color/icons"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
