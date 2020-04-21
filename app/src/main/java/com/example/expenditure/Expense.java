@@ -1,20 +1,34 @@
 package com.example.expenditure;
 
+import android.util.Log;
+
 import com.google.firebase.Timestamp;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Expense {
 
+    private String TAG = "Expense";
+
     private Timestamp timestamp;
     private float amount;
     private String description;
 
-    public Expense() { timestamp = Timestamp.now(); }
+    // Do not remove this, it is required by FirebaseFirestore
+    public Expense() {
+    }
 
     public Expense(float amount, String description){
+        Log.d(TAG, "Without date");
         this.timestamp = Timestamp.now();
+        this.amount = amount;
+        this.description = description;
+    }
+
+    public Expense(float amount, String description, Date timestamp) {
+        this.timestamp = (timestamp == null) ? Timestamp.now() : new Timestamp(timestamp);
         this.amount = amount;
         this.description = description;
     }
