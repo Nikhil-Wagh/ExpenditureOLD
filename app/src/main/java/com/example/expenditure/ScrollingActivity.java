@@ -2,16 +2,14 @@ package com.example.expenditure;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -25,13 +23,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.transition.Visibility;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -64,8 +60,14 @@ public class ScrollingActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: started");
 
 
-//        final Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+        final Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        CollapsingToolbarLayout toolbarLayout = findViewById(R.id.toolbar_layout);
+        View expenseForm = getLayoutInflater().inflate(R.layout.add_expense_form, toolbarLayout, false);
+        toolbarLayout.addView(expenseForm);
+
 
         initComponents();
 
@@ -94,7 +96,6 @@ public class ScrollingActivity extends AppCompatActivity {
 
             @Override
             protected void onBindViewHolder(@NonNull ExpenseViewHolder expenseViewHolder, int position, @NonNull Expense expense) {
-//                Log.d(TAG, "onBindViewHolder expense = " + expense.toString());
                 expenseViewHolder.setAmount(expense.getAmount());
                 expenseViewHolder.setDescription(expense.getDescription());
                 expenseViewHolder.setTimestamp(expense.getTimestamp());
@@ -107,20 +108,36 @@ public class ScrollingActivity extends AppCompatActivity {
         SaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: validate inputs
-                float amount = Float.valueOf(AmountEditText.getText().toString());
+                float amount;
+                String stramount = AmountEditText.getText().toString();
+                if (stramount.length() > 0 && !stramount.matches("[a-zA-Z]"))
+                    amount = Float.valueOf(stramount);
+                else {
+                    AmountEditText.requestFocus();
+                    AmountEditText.setError("Not a valid number");
+                    return;
+                }
+
                 String description = DescriptionEditText.getText().toString();
+                if (description.length() <= 0) {
+                    DescriptionEditText.requestFocus();
+                    DescriptionEditText.setError("Not a valid description");
+                    return;
+                }
+
                 String str_timestamp = TimestampTextView.getText().toString();
-                Date timestamp = null;
+                Date timestamp;
                 try {
                     timestamp = DateFormat.getDateTimeInstance().parse(str_timestamp);
                 } catch (ParseException e) {
                     e.printStackTrace();
+                    timestamp = null;
                 }
                 Expense expense = new Expense(amount, description, timestamp);
                 Log.d(TAG, "expense = " + expense.toString());
+
+                clearResponses();
                 saveNewExpenseToDB(user_expenses, expense);
-                // TODO: Clear responses
             }
         });
 
@@ -130,6 +147,13 @@ public class ScrollingActivity extends AppCompatActivity {
                 setDateTimeFromPicker();
             }
         });
+    }
+
+    private void clearResponses() {
+        closeKeyboard();
+        AmountEditText.setText(null);
+        DescriptionEditText.setText(null);
+        TimestampTextView.setText(now());
     }
 
     public Calendar setDateTimeFromPicker() {
@@ -164,7 +188,7 @@ public class ScrollingActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // Show proper alert
+                        // TODO: Show proper alert
                         Toast.makeText(ScrollingActivity.this, "Error while saving expense", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -176,38 +200,15 @@ public class ScrollingActivity extends AppCompatActivity {
         DescriptionEditText = findViewById(R.id.editText_Description);
         EditTimestampButton = findViewById(R.id.button_EditTimestamp);
         TimestampTextView = findViewById(R.id.textView_Timestamp);
-//        TimestampTextView.setText(DateFormat.getDateTimeInstance().format(new Date()));
+        TimestampTextView.setText(now());
+    }
+
+    private String now() {
+        return DateFormat.getDateTimeInstance().format(new Date());
     }
 
     private String getUserId() {
         return mAuth.getCurrentUser().getUid();
-    }
-
-    private void isUserLoggedIn() {
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_scrolling, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_sign_out) {
-            signOutUser();
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void signOutUser() {
@@ -218,8 +219,6 @@ public class ScrollingActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-//        isUserLoggedIn();
         adapter.startListening();
     }
 
@@ -227,7 +226,6 @@ public class ScrollingActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-
         adapter.stopListening();
     }
 
@@ -236,6 +234,14 @@ public class ScrollingActivity extends AppCompatActivity {
             Log.d(TAG, "onStart: no User");
             startActivity(new Intent(this, LoginActivity.class));
             finish();
+        }
+    }
+
+    private void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
