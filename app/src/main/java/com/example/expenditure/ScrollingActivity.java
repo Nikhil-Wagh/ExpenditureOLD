@@ -65,13 +65,13 @@ public class ScrollingActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         CollapsingToolbarLayout toolbarLayout = findViewById(R.id.toolbar_layout);
-        View expenseForm = getLayoutInflater().inflate(R.layout.add_expense_form, toolbarLayout, false);
+        final View expenseForm = getLayoutInflater().inflate(R.layout.add_expense_form, toolbarLayout, false);
         toolbarLayout.addView(expenseForm);
 
 
         initComponents();
 
-        RecyclerView recyclerView = findViewById(R.id.expense_list);
+        final RecyclerView recyclerView = findViewById(R.id.expense_list);
 
         FirebaseFirestore db_instance = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -86,6 +86,7 @@ public class ScrollingActivity extends AppCompatActivity {
                 .build();
 
         adapter = new FirestoreRecyclerAdapter<Expense, ExpenseViewHolder>(options) {
+
             @NonNull
             @Override
             public ExpenseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -95,10 +96,19 @@ public class ScrollingActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull ExpenseViewHolder expenseViewHolder, int position, @NonNull Expense expense) {
+            protected void onBindViewHolder(@NonNull final ExpenseViewHolder expenseViewHolder, int position, @NonNull final Expense expense) {
+                Log.d(TAG, "onBindViewHolder position = " + position);
                 expenseViewHolder.setAmount(expense.getAmount());
                 expenseViewHolder.setDescription(expense.getDescription());
                 expenseViewHolder.setTimestamp(expense.getTimestamp());
+                expenseViewHolder.button_delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int position = expenseViewHolder.getAdapterPosition();
+                        Log.d(TAG, "onBindViewHolder :: onClick :: position = " + position);
+                        getSnapshots().getSnapshot(position).getReference().delete();
+                    }
+                });
             }
         };
 
