@@ -10,7 +10,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/app_bar_height"
+        android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
@@ -18,9 +18,9 @@
             android:id="@+id/toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:toolbarId="@+id/toolbar">
 
             <androidx.appcompat.widget.Toolbar
@@ -39,8 +39,8 @@
         android:layout_height="match_parent"
         app:layout_anchorGravity="center"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:paddingBottom="130dp">
-        <!--    TODO: This paddingBottom will not work for every device    -->
+        android:background="@color/primary_light"
+        android:paddingBottom="8dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/expense_list"
@@ -50,13 +50,6 @@
 
         </androidx.recyclerview.widget.RecyclerView>
     </androidx.core.widget.NestedScrollView>
-
-    <include
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/add_expense_form"
-        android:layout_gravity="bottom"
-        />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

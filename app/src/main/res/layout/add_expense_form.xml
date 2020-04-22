@@ -4,14 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:ignore="MissingDefaultResource"
-    >
+    tools:ignore="MissingDefaultResource">
 
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp">
+        android:layout_margin="8dp"
+        android:elevation="@dimen/cardview_elevation"
+        app:cardCornerRadius="@dimen/cardview_radius">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -30,7 +31,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:text="@string/amount_tv"
-
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -78,13 +78,18 @@
                 android:id="@+id/layout_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/layout_description">
+                android:layout_below="@id/layout_description"
+                android:layout_marginBottom="4dp">
 
                 <Button
                     android:id="@+id/button_save"
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:text="Save"
+                    android:background="@drawable/button"
+                    android:minHeight="40dp"
+                    android:textColor="@color/icons"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -95,8 +100,8 @@
                     android:id="@+id/button_EditTimestamp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorBackground"
-                    android:src="@drawable/ic_edit"
+                    android:background="@color/icons"
+                    android:src="@drawable/ic_event_black_24dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -107,7 +112,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="8dp"
-                    android:text="timestamp"
+                    android:text="Now"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/button_EditTimestamp"
                     app:layout_constraintTop_toTopOf="parent" />
