@@ -1,4 +1,4 @@
-package com.example.expenditure;
+package com.example.expenditure.Home;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -24,7 +24,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.expenditure.Expense;
+import com.example.expenditure.ExpenseViewHolder;
 import com.example.expenditure.Login.LoginActivity;
+import com.example.expenditure.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -42,7 +45,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
-public class ScrollingActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity";
     private Button SaveButton;
@@ -171,11 +174,11 @@ public class ScrollingActivity extends AppCompatActivity {
         final Calendar date;
         final Calendar currentDate = Calendar.getInstance();
         date = Calendar.getInstance();
-        new DatePickerDialog(ScrollingActivity.this, new DatePickerDialog.OnDateSetListener() {
+        new DatePickerDialog(HomeActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 date.set(year, monthOfYear, dayOfMonth);
-                new TimePickerDialog(ScrollingActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                new TimePickerDialog(HomeActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         date.set(Calendar.HOUR_OF_DAY, hourOfDay);
@@ -200,7 +203,7 @@ public class ScrollingActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         // TODO: Show proper alert
-                        Toast.makeText(ScrollingActivity.this, "Error while saving expense", Toast.LENGTH_LONG).show();
+                        Toast.makeText(HomeActivity.this, "Error while saving expense", Toast.LENGTH_LONG).show();
                     }
                 });
     }
