@@ -24,9 +24,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.expenditure.Expense;
-import com.example.expenditure.ExpenseViewHolder;
 import com.example.expenditure.Login.LoginActivity;
+import com.example.expenditure.NewExpense.Expense;
+import com.example.expenditure.NewExpense.ExpenseViewHolder;
 import com.example.expenditure.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
