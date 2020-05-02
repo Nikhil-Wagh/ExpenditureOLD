@@ -1,4 +1,4 @@
-package com.example.expenditure;
+package com.example.expenditure.Login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.expenditure.Home.HomeActivity;
+import com.example.expenditure.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -73,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
     private void updateUI(FirebaseUser user) {
         if (user != null) {
             Log.d(TAG, "updateUI: Account OK");
-            startActivity(new Intent(this, ScrollingActivity.class));
+            startActivity(new Intent(this, HomeActivity.class));
         }
     }
 

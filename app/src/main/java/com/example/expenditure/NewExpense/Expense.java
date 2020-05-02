@@ -1,4 +1,4 @@
-package com.example.expenditure;
+package com.example.expenditure.NewExpense;
 
 import android.util.Log;
 

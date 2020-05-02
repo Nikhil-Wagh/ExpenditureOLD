@@ -1,4 +1,4 @@
-package com.example.expenditure;
+package com.example.expenditure.NewExpense;
 
 import android.view.View;
 import android.widget.ImageButton;
@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.expenditure.R;
 import com.google.firebase.Timestamp;
 
 import java.text.DateFormat;
