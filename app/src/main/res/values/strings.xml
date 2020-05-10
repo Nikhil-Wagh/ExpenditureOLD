@@ -15,4 +15,29 @@
     <string name="login_failed">"Login failed"</string>
     <string name="sign_in_failed">Google sign In failed</string>
     <string name="sign_out">Sign Out</string>
+    <string name="title_expenditure_list">Expenditures</string>
+    <string name="title_expenditure_detail">Expenditure Detail</string>
+    <string name="monthly_expenditure">Monthly Expenditure</string>
+    <string name="income">Income: <b>%d</b></string>
+    <string-array name="payment_modes">
+        <item>Cash</item>
+        <item>Credit Card</item>
+        <item>Debit Card</item>
+        <item>UPI</item>
+        <item>Online Banking</item>
+    </string-array>
+    <string-array name="months">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
 </resources>
