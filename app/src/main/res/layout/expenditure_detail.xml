@@ -23,6 +23,7 @@
             android:text="Transaction ID" />
 
         <TextView
+            android:id="@+id/tv_document_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -54,6 +55,7 @@
                 android:text="MONTH" />
 
             <TextView
+                android:id="@+id/tv_month"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -84,6 +86,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/layout_input_fields"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingVertical="4dp"
@@ -96,12 +99,14 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:startIconDrawable="@drawable/ic_rupee_indian_black_24dp"
             android:hint="Amount">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_amount"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -119,6 +124,53 @@
                 android:layout_height="80dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/outlinedTextField_description"
+            android:hint="Mode"
+            app:startIconDrawable="@drawable/ic_wallet_black_24dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/tv_autocomplete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:editable="false"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_timestamp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="16dp"
+        app:layout_constraintTop_toBottomOf="@id/layout_input_fields">
+
+        <ImageButton
+            android:id="@+id/button_EditTimestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/icons"
+            android:src="@drawable/ic_event_black_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="8dp"
+            android:text="May 9, 2020 at 12:00 AM"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/button_EditTimestamp"
+            app:layout_constraintTop_toTopOf="parent" />
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

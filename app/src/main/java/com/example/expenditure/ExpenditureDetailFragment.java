@@ -5,6 +5,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +19,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Source;
+
+import java.text.DateFormat;
 
 
 /**
@@ -52,8 +57,6 @@ public class ExpenditureDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         Log.d(TAG, String.valueOf(getArguments()));
-
-
     }
 
     @Override
@@ -72,7 +75,11 @@ public class ExpenditureDetailFragment extends Fragment {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             mItem = documentSnapshot.toObject(Expense.class);
-                            ((TextView) rootView.findViewById(R.id.et_amount)).setText(mItem.getDescription());
+                            ((EditText) rootView.findViewById(R.id.et_amount)).setText(String.valueOf(mItem.getAmount()));
+                            ((EditText) rootView.findViewById(R.id.et_description)).setText(mItem.getDescription());
+                            ((TextView) rootView.findViewById(R.id.tv_timestamp)).setText(DateFormat.getDateTimeInstance().format(mItem.getTimestamp().toDate()));
+                            ((TextView) rootView.findViewById(R.id.tv_document_id)).setText(documentSnapshot.getId());
+//                            ((TextView) rootView.findViewById(R.id.tv_month)).setText(mItem.getTimestamp().().toString());
                             Log.d(TAG, mItem.toString());
                         }
                     })
@@ -83,12 +90,12 @@ public class ExpenditureDetailFragment extends Fragment {
                         }
                     });
         }
-        // Show the dummy content as text in a TextView.
-//        if (mItem != null) {
-//            ((TextView) rootView.findViewById(R.id.expenditure_detail)).setText(mItem.getDescription());
-//        } else {
-//            Log.e(TAG, "mItem is null");
-//        }
+
+        String[] paymentModes = getResources().getStringArray(R.array.payment_modes);
+        ArrayAdapter<String> adapter = new ArrayAdapter(getContext(), R.layout.dropdown_listitem, paymentModes);
+        AutoCompleteTextView editTextPaymentMode = rootView.findViewById(R.id.tv_autocomplete);
+        editTextPaymentMode.setText(paymentModes[0]);
+        editTextPaymentMode.setAdapter(adapter);
 
         return rootView;
     }
