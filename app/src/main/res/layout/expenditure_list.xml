@@ -8,4 +8,4 @@
     android:layout_height="match_parent"
     app:layoutManager="LinearLayoutManager"
     tools:context=".ExpenditureListActivity"
-    tools:listitem="@layout/individual_expenditure_layout" />
+    tools:listitem="@layout/expenditure_list_content" />

@@ -95,7 +95,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public ExpenseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-                View view = layoutInflater.inflate(R.layout.individual_expenditure_layout, parent, false);
+                View view = layoutInflater.inflate(R.layout.expenditure_list_content, parent, false);
                 return new ExpenseViewHolder(view);
             }
 

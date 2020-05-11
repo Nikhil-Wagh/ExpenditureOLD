@@ -3,34 +3,27 @@ package com.example.expenditure;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.expenditure.NewExpense.Expense;
 import com.example.expenditure.NewExpense.ExpenseViewHolder;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.example.expenditure.dummy.DummyContent;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-
-import java.util.List;
 
 /**
  * An activity representing a list of Expenditures. This activity
@@ -57,7 +50,7 @@ public class ExpenditureListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expenditure_list);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
@@ -73,6 +66,8 @@ public class ExpenditureListActivity extends AppCompatActivity {
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
+
+        Log.d(TAG, "mTwoPane=" + mTwoPane);
 
         View recyclerView = findViewById(R.id.expenditure_list);
         assert recyclerView != null;
@@ -93,22 +88,22 @@ public class ExpenditureListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Expense item = (Expense) view.getTag();
-                Log.d(TAG, "getTag() = " + view.getTag());
-                if (item != null)
-                if (mTwoPane) {
-                    Bundle arguments = new Bundle();
-                    arguments.putString(ExpenditureDetailFragment.ARG_ITEM_ID, item.id.toString());
-                    ExpenditureDetailFragment fragment = new ExpenditureDetailFragment();
-                    fragment.setArguments(arguments);
-                    mParentActivity.getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.expenditure_detail_container, fragment)
-                            .commit();
-                } else {
-                    Context context = view.getContext();
-                    Intent intent = new Intent(context, ExpenditureDetailActivity.class);
-                    intent.putExtra(ExpenditureDetailFragment.ARG_ITEM_ID, item.id.toString());
-
-                    context.startActivity(intent);
+                if (item != null) {
+                    if (mTwoPane) {
+                        Toast.makeText(mParentActivity, "Hello World", Toast.LENGTH_SHORT).show();
+                        Bundle arguments = new Bundle();
+                        arguments.putSerializable(ExpenditureDetailFragment.ARG_ITEM_ID, item);
+                        ExpenditureDetailFragment fragment = new ExpenditureDetailFragment();
+                        fragment.setArguments(arguments);
+                        mParentActivity.getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.expenditure_detail_container, fragment)
+                                .commit();
+                    } else {
+                        Context context = view.getContext();
+                        Intent intent = new Intent(context, ExpenditureDetailActivity.class);
+                        intent.putExtra(ExpenditureDetailFragment.ARG_ITEM_ID, item.getDocumentName());
+                        context.startActivity(intent);
+                    }
                 }
                 else {
                     Log.e(TAG, "item is null");
@@ -122,7 +117,7 @@ public class ExpenditureListActivity extends AppCompatActivity {
             @Override
             public ExpenseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-                View view = layoutInflater.inflate(R.layout.individual_expenditure_layout, parent, false);
+                View view = layoutInflater.inflate(R.layout.expenditure_list_content, parent, false);
                 return new ExpenseViewHolder(view);
             }
 
@@ -130,7 +125,9 @@ public class ExpenditureListActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull final ExpenseViewHolder expenseViewHolder, int position, @NonNull final Expense expense) {
                 Log.d(TAG, "onBindViewHolder position = " + position);
 
-                expense.setId(getSnapshots().getSnapshot(position).getReference());
+//                Log.d(TAG, "SEE THIS"+getSnapshots().getSnapshot(position).getId());
+
+                expense.setDocumentName(getSnapshots().getSnapshot(position).getId());
                 expenseViewHolder.setAmount(expense.getAmount());
                 expenseViewHolder.setDescription(expense.getDescription());
                 expenseViewHolder.setTimestamp(expense.getTimestamp());
