@@ -20,14 +20,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Transaction ID" />
+            android:text="@string/transaction_id" />
 
         <TextView
             android:id="@+id/tv_document_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:text="abcdefghi" />
+            android:text="@string/sample_transaction_id" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -52,14 +52,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="MONTH" />
+                android:text="@string/month" />
 
             <TextView
                 android:id="@+id/tv_month"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:text="January" />
+                android:text="@string/sample_month" />
 
         </RelativeLayout>
 
@@ -73,13 +73,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="REMAINING BEFORE TRANSACTION" />
+                android:text="@string/remaining_before_transaction" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:text="Rs 0.00" />
+                android:text="@string/sample_amount" />
 
         </RelativeLayout>
 
@@ -100,7 +100,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:startIconDrawable="@drawable/ic_rupee_indian_black_24dp"
-            android:hint="Amount">
+            android:hint="@string/amount">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_amount"
@@ -116,7 +116,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/outlinedTextField"
-            android:hint="Description">
+            android:hint="@string/description">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_description"
@@ -130,7 +130,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/outlinedTextField_description"
-            android:hint="Mode"
+            android:hint="@string/hint_dropdown_payment_mode"
             app:startIconDrawable="@drawable/ic_wallet_black_24dp">
 
             <AutoCompleteTextView
@@ -148,10 +148,10 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingVertical="16dp"
-        android:layout_margin="4dp"
         android:clipToPadding="false"
         android:elevation="4dp"
-        android:outlineAmbientShadowColor="@color/secondary_text"
+        android:clickable="true"
+        android:focusable="true"
 
         app:layout_constraintTop_toBottomOf="@id/layout_input_fields">
 
@@ -163,6 +163,7 @@
             android:src="@drawable/ic_event_black_24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:contentDescription="@string/timestamp_description"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -172,7 +173,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="8dp"
-            android:text="May 9, 2020 at 12:00 AM"
+            android:text="@string/sample_date_time"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/button_EditTimestamp"
             app:layout_constraintTop_toTopOf="parent" />
@@ -190,7 +191,7 @@
             style="@style/Widget.MaterialComponents.Button.Icon"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="SAVE"
+            android:text="@string/button_save"
             android:textSize="16sp"
             app:icon="@drawable/ic_save_black_24dp"
             app:iconPadding="-24dp" />
