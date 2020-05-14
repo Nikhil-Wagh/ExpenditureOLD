@@ -147,7 +147,7 @@ public class HomeActivity extends AppCompatActivity {
                     e.printStackTrace();
                     timestamp = null;
                 }
-                Expense expense = new Expense(amount, description, timestamp);
+                Expense expense = new Expense(amount, description, "", timestamp);
                 Log.d(TAG, "expense = " + expense.toString());
 
                 clearResponses();

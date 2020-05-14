@@ -92,7 +92,7 @@ public class ExpenditureListActivity extends AppCompatActivity {
                     if (mTwoPane) {
                         Toast.makeText(mParentActivity, "Hello World", Toast.LENGTH_SHORT).show();
                         Bundle arguments = new Bundle();
-                        arguments.putSerializable(ExpenditureDetailFragment.ARG_ITEM_ID, item);
+                        arguments.putSerializable(ExpenditureDetailFragment.ARG_ITEM_ID, item.getDocumentName());
                         ExpenditureDetailFragment fragment = new ExpenditureDetailFragment();
                         fragment.setArguments(arguments);
                         mParentActivity.getSupportFragmentManager().beginTransaction()
