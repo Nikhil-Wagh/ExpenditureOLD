@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:ignore="MissingDefaultResource">
 
 
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
-        app:cardCornerRadius="16dp">
+        app:cardCornerRadius="8dp">
 
 
         <RelativeLayout
@@ -47,10 +47,10 @@
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:gravity="right"
+                    android:text="₹ 0.00"
+                    android:textColor="@color/accent"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:textColor="@color/accent"
-                    android:text="₹ 0.00"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

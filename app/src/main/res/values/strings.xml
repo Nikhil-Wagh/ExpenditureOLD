@@ -15,4 +15,40 @@
     <string name="login_failed">"Login failed"</string>
     <string name="sign_in_failed">Google sign In failed</string>
     <string name="sign_out">Sign Out</string>
+    <string name="title_expenditure_list">Expenditures</string>
+    <string name="title_expenditure_detail">Expenditure Detail</string>
+    <string name="monthly_expenditure">Monthly Expenditure</string>
+    <string name="income">Income: <b>%d</b></string>
+    <string name="button_save">SAVE</string>
+    <string name="sample_date_time">May 9, 2020 at 12:00 AM</string>
+    <string name="hint_dropdown_payment_mode">Mode</string>
+    <string name="amount">Amount</string>
+    <string name="sample_amount">Rs 0.00</string>
+    <string name="remaining_before_transaction">REMAINING BEFORE TRANSACTION</string>
+    <string name="sample_month">January</string>
+    <string name="month">MONTH</string>
+    <string name="sample_transaction_id">abcdefghi</string>
+    <string name="transaction_id">Transaction ID</string>
+    <string name="timestamp_description">timestamp will appear here</string>
+    <string-array name="payment_modes">
+        <item>Cash</item>
+        <item>Credit Card</item>
+        <item>Debit Card</item>
+        <item>UPI</item>
+        <item>Online Banking</item>
+    </string-array>
+    <string-array name="months">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
 </resources>
