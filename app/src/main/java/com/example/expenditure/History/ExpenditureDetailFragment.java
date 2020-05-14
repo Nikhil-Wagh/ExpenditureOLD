@@ -1,4 +1,4 @@
-package com.example.expenditure;
+package com.example.expenditure.History;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.expenditure.Firebase.Helpers;
 import com.example.expenditure.NewExpense.Expense;
+import com.example.expenditure.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;

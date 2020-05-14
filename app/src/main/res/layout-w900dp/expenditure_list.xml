@@ -10,7 +10,7 @@
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context=".ExpenditureListActivity">
+    tools:context=".History.ExpenditureListActivity">
 
     <!--
     This layout is a two-pane layout for the Expenditures
@@ -27,7 +27,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:context="com.example.expenditure.ExpenditureListActivity"
+        tools:context="com.example.expenditure.History.ExpenditureListActivity"
         tools:listitem="@layout/expenditure_list_content" />
 
     <FrameLayout

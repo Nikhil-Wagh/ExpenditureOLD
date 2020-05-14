@@ -1,4 +1,4 @@
-package com.example.expenditure;
+package com.example.expenditure.History;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.expenditure.NewExpense.Expense;
 import com.example.expenditure.NewExpense.ExpenseViewHolder;
+import com.example.expenditure.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;

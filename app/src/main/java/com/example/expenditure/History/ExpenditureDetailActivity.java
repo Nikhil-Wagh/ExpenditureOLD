@@ -1,4 +1,4 @@
-package com.example.expenditure;
+package com.example.expenditure.History;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,8 @@ import android.view.MenuItem;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import com.example.expenditure.R;
 
 /**
  * An activity representing a single Expenditure detail screen. This
