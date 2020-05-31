@@ -55,4 +55,12 @@
         <item>November</item>
         <item>December</item>
     </string-array>
+
+    <string name="greeting_user">Hi, %1$s!</string>
+
+    <string name="search">Search</string>
+    <string name="content_description_search">Search from past history of expenses</string>
+    <string name="notifications">Notifications</string>
+    <string name="content_description_more">Notifications of recent expenses</string>
+    <string name="default_user_name">User</string>
 </resources>

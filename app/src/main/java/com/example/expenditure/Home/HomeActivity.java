@@ -4,33 +4,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
+import com.example.expenditure.Firebase.Helpers;
 import com.example.expenditure.History.ExpenditureListActivity;
 import com.example.expenditure.R;
-import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomeActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity";
-
-    private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR = 0.9f;
-    private static final float PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f;
-    private static final int ALPHA_ANIMATIONS_DURATION = 200;
-
-    private boolean mIsTheTitleVisible = false;
-    private boolean mIsTheTitleContainerVisible = true;
-
-    private LinearLayout mTitleContainer;
-    private TextView mTitle;
-    private AppBarLayout mAppBarLayout;
-    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,16 +25,16 @@ public class HomeActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: started");
 
         initViews();
-
-//        mAppBarLayout.addOnOffsetChangedListener(this);
-
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
     }
 
     private void initViews() {
-        bindActivity();
+        setupTopAppBar();
         setupBottomNavbar();
+    }
+
+    private void setupTopAppBar() {
+        MaterialToolbar mToolBar = findViewById(R.id.toolbar);
+        mToolBar.setTitle(getString(R.string.greeting_user, Helpers.getUsername()));
     }
 
     private void setupBottomNavbar() {
@@ -84,12 +70,5 @@ public class HomeActivity extends AppCompatActivity {
                 return true;
             }
         });
-    }
-
-    private void bindActivity() {
-        mToolbar = findViewById(R.id.toolbar);
-        mTitle = findViewById(R.id.main_textview_title);
-        mTitleContainer = findViewById(R.id.main_linearlayout_title);
-        mAppBarLayout = findViewById(R.id.app_bar);
     }
 }
