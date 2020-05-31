@@ -13,11 +13,6 @@
             android:name=".History.ExpenditureListActivity"
             android:label="@string/title_expenditure_list"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".History.ExpenditureDetailActivity"
@@ -31,7 +26,11 @@
         <activity
             android:name=".Login.LoginActivity"
             android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Home.HomeActivity"

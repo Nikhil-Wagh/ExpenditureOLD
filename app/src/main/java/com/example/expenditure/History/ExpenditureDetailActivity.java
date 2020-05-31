@@ -44,8 +44,8 @@ public class ExpenditureDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(ExpenditureDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(ExpenditureDetailFragment.ARG_ITEM_ID));
+//            arguments.putString(ExpenditureDetailFragment.ARG_ITEM_ID,
+//                    getIntent().getStringExtra(ExpenditureDetailFragment.ARG_ITEM_ID));
             ExpenditureDetailFragment fragment = new ExpenditureDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()

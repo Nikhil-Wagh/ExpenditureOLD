@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -15,11 +16,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.expenditure.Home.HomeActivity;
 import com.example.expenditure.NewExpense.Expense;
 import com.example.expenditure.NewExpense.ExpenseViewHolder;
 import com.example.expenditure.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -54,6 +57,8 @@ public class ExpenditureListActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
+
+        setupBottomNavbar();
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -158,6 +163,53 @@ public class ExpenditureListActivity extends AppCompatActivity {
         Query query = user_expenses.orderBy("timestamp", Query.Direction.DESCENDING);
         return query;
     }
+
+    private void setupBottomNavbar() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.page_history);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.page_home: {
+                        Intent intent = new Intent(ExpenditureListActivity.this, HomeActivity.class);
+                        startActivity(intent);
+                        finish();
+                        break;
+                    }
+                    case R.id.page_history: {
+                        break;
+                    }
+//                    case R.id.page_add_new: {
+//                        Intent intent = new Intent(HomeActivity.this, AddExpenseActivity.class);
+//                        startActivity(intent);
+//                        break;
+//                    }
+//                    case R.id.page_analytics: {
+//                        Intent intent = new Intent(HomeActivity.this, AnalyticsActivity.class);
+//                        startActivity(intent);
+//                        break;
+//                    }
+//                    case R.id.page_settings: {
+//                        Intent intent = new Intent(HomeActivity.this, SettingsActivity.class);
+//                        startActivity(intent);
+//                        break;
+//                    }
+                }
+                return true;
+            }
+        });
+    }
+
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        if (id == android.R.id.home) {
+//            navigateUpTo(new Intent(this, HomeActivity.class));
+//            return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     private String getUserId() {
         return mAuth.getCurrentUser().getUid();

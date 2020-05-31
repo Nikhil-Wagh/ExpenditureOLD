@@ -60,7 +60,7 @@ public class ExpenditureDetailFragment extends Fragment {
     private Expense mItem;
 
     private TextView mTimestampTextView, mModeTextView;
-    private EditText mAmountEditText, mDescriptionEditText;
+    private EditText mAmountEditText, mDescriptionEditText, mTimestampEditText;
     private Button mSaveButton;
 
     private ProgressBar mProgressBar;
@@ -190,7 +190,8 @@ public class ExpenditureDetailFragment extends Fragment {
                             mItem = documentSnapshot.toObject(Expense.class);
                             ((EditText) rootView.findViewById(R.id.et_amount)).setText(String.valueOf(mItem.getAmount()));
                             ((EditText) rootView.findViewById(R.id.et_description)).setText(mItem.getDescription());
-                            ((TextView) rootView.findViewById(R.id.tv_timestamp)).setText(DateFormat.getDateTimeInstance().format(mItem.getTimestamp().toDate()));
+//                            ((TextView) rootView.findViewById(R.id.et_timestamp)).setText(DateFormat.getDateTimeInstance().format(mItem.getTimestamp().toDate()));
+                            ((TextView) rootView.findViewById(R.id.et_timestamp)).setText(DateFormat.getDateTimeInstance().format(mItem.getTimestamp().toDate()));
                             ((TextView) rootView.findViewById(R.id.tv_document_id)).setText(documentSnapshot.getId());
                             ((TextView) rootView.findViewById(R.id.tv_payment_mode)).setText(mItem.getMode());
                             setDropDownAdapter(rootView);
@@ -229,7 +230,7 @@ public class ExpenditureDetailFragment extends Fragment {
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         date.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         date.set(Calendar.MINUTE, minute);
-                        mTimestampTextView.setText(DateFormat.getDateTimeInstance().format(date.getTime()));
+                        mTimestampEditText.setText(DateFormat.getDateTimeInstance().format(date.getTime()));
                     }
                 }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), false).show();
             }
@@ -241,13 +242,13 @@ public class ExpenditureDetailFragment extends Fragment {
         mAmountEditText = root.findViewById(R.id.et_amount);
         mDescriptionEditText = root.findViewById(R.id.et_description);
         mModeTextView = root.findViewById(R.id.tv_payment_mode);
-        mTimestampTextView = root.findViewById(R.id.tv_timestamp);
+        mTimestampEditText = root.findViewById(R.id.et_timestamp);
 
         mProgressBar = root.findViewById(R.id.indeterminate_progressbar);
 
         mSaveButton = root.findViewById(R.id.button_save);
         mSaveButton.setOnClickListener(mSaveButtonOnClickListener);
 
-        root.findViewById(R.id.layout_timestamp).setOnClickListener(mTimestampOnClickListener);
+        root.findViewById(R.id.et_timestamp).setOnClickListener(mTimestampOnClickListener);
     }
 }

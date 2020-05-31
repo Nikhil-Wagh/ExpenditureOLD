@@ -89,7 +89,6 @@
         android:id="@+id/layout_input_fields"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layout_monthly_data">
@@ -126,6 +125,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/outlinedTextField_payment_mode"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -140,44 +140,61 @@
                 android:editable="false"
                 android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/outlinedTextField_datetime"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/outlinedTextField_payment_mode"
+            android:hint="dd/mm/yyyy"
+            app:startIconDrawable="@drawable/ic_event_black_24dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_timestamp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="date" />
+
+        </com.google.android.material.textfield.TextInputLayout>
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/layout_timestamp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingVertical="16dp"
-        android:clipToPadding="false"
-        android:elevation="4dp"
-        android:clickable="true"
-        android:focusable="true"
+    <!--    <RelativeLayout-->
+    <!--        android:id="@+id/layout_timestamp"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:orientation="horizontal"-->
+    <!--        android:paddingVertical="16dp"-->
+    <!--        android:clipToPadding="false"-->
+    <!--        android:elevation="4dp"-->
+    <!--        android:clickable="true"-->
+    <!--        android:focusable="true"-->
 
-        app:layout_constraintTop_toBottomOf="@id/layout_input_fields">
+    <!--        app:layout_constraintTop_toBottomOf="@id/layout_input_fields">-->
 
-        <ImageButton
-            android:id="@+id/button_EditTimestamp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/icons"
-            android:src="@drawable/ic_event_black_24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:contentDescription="@string/timestamp_description"
-            app:layout_constraintTop_toTopOf="parent" />
+    <!--        <ImageButton-->
+    <!--            android:id="@+id/button_EditTimestamp"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:background="@color/icons"-->
+    <!--            android:src="@drawable/ic_event_black_24dp"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            android:contentDescription="@string/timestamp_description"-->
+    <!--            app:layout_constraintTop_toTopOf="parent" />-->
 
-        <TextView
-            android:id="@+id/tv_timestamp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="8dp"
-            android:text="@string/sample_date_time"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/button_EditTimestamp"
-            app:layout_constraintTop_toTopOf="parent" />
-    </RelativeLayout>
+    <!--        <TextView-->
+    <!--            android:id="@+id/tv_timestamp"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_alignParentTop="true"-->
+    <!--            android:layout_alignParentEnd="true"-->
+    <!--            android:layout_marginStart="8dp"-->
+    <!--            android:text="@string/sample_date_time"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintStart_toEndOf="@+id/button_EditTimestamp"-->
+    <!--            app:layout_constraintTop_toTopOf="parent" />-->
+    <!--    </RelativeLayout>-->
 
 
     <RelativeLayout
