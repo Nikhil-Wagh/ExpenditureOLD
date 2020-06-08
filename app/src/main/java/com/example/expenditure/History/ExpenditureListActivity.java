@@ -137,14 +137,14 @@ public class ExpenditureListActivity extends AppCompatActivity {
                 expenseViewHolder.setAmount(expense.getAmount());
                 expenseViewHolder.setDescription(expense.getDescription());
                 expenseViewHolder.setTimestamp(expense.getTimestamp());
-                expenseViewHolder.button_delete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int position = expenseViewHolder.getAdapterPosition();
-                        Log.d(TAG, "onBindViewHolder :: onClick :: reference = " + expense.getId().toString());
-                        expense.getId().delete();
-                    }
-                });
+//                expenseViewHolder.button_delete.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        int position = expenseViewHolder.getAdapterPosition();
+//                        Log.d(TAG, "onBindViewHolder :: onClick :: reference = " + expense.getId().toString());
+//                        expense.getId().delete();
+//                    }
+//                });
                 expenseViewHolder.itemView.setTag(expense);
                 expenseViewHolder.itemView.setOnClickListener(mOnClickListener);
             }
@@ -200,16 +200,6 @@ public class ExpenditureListActivity extends AppCompatActivity {
             }
         });
     }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        if (id == android.R.id.home) {
-//            navigateUpTo(new Intent(this, HomeActivity.class));
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 
     private String getUserId() {
         return mAuth.getCurrentUser().getUid();

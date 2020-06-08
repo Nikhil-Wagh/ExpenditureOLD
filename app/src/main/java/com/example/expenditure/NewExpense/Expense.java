@@ -1,6 +1,6 @@
 package com.example.expenditure.NewExpense;
 
-import com.example.expenditure.Firebase.Helpers;
+import com.example.expenditure.Utility.Firebase;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 
@@ -45,7 +45,7 @@ public class Expense {
     }
 
     public DocumentReference getId() {
-        return Helpers.
+        return Firebase.
                 expenses().
                 document(this.mDocumentName);
     }

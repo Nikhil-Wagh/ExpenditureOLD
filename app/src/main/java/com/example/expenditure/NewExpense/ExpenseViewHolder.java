@@ -25,7 +25,7 @@ public class ExpenseViewHolder extends RecyclerView.ViewHolder {
         textView_amount = itemView.findViewById(R.id.textView_amount);
         textView_description = itemView.findViewById(R.id.textView_description);
         textView_timestamp = itemView.findViewById(R.id.textView_timestamp);
-        button_delete = itemView.findViewById(R.id.button_delete);
+//        button_delete = itemView.findViewById(R.id.button_delete);
     }
 
     public void setAmount(float amount) {

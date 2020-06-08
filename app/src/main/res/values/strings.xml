@@ -55,6 +55,15 @@
         <item>November</item>
         <item>December</item>
     </string-array>
+    <string-array name="week_days">
+        <item>SUN</item>
+        <item>MON</item>
+        <item>TUE</item>
+        <item>WED</item>
+        <item>THU</item>
+        <item>FRI</item>
+        <item>SAT</item>
+    </string-array>
 
     <string name="greeting_user">Hi, %1$s!</string>
 

@@ -21,18 +21,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.expenditure.Firebase.Helpers;
 import com.example.expenditure.NewExpense.Expense;
 import com.example.expenditure.R;
+import com.example.expenditure.Utility.Firebase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Source;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -113,21 +111,21 @@ public class ExpenditureDetailFragment extends Fragment {
             updates.put("mode", mode);
 
 
-            String str_timestamp = mTimestampTextView.getText().toString();
-            Date timestamp;
-            try {
-                timestamp = DateFormat.getDateTimeInstance().parse(str_timestamp);
-            } catch (ParseException e) {
-                e.printStackTrace();
-                timestamp = null;
-            }
-            updates.put("timestamp", timestamp);
+//            String str_timestamp = mTimestampTextView.getText().toString();
+//            Date timestamp;
+//            try {
+//                timestamp = DateFormat.getDateTimeInstance().parse(str_timestamp);
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//                timestamp = null;
+//            }
+//            updates.put("timestamp", timestamp);
 
             Log.d(TAG, "documentName=" + mItem.getDocumentName());
 
             mProgressBar.setVisibility(View.VISIBLE);
 
-            Helpers.
+            Firebase.
                     getExpenseReference(mItem.getDocumentName()).
                     update(updates).
                     addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -176,12 +174,14 @@ public class ExpenditureDetailFragment extends Fragment {
 
         initInputFields(rootView);
 
+        hideProgressBar();
+
         if (getArguments().containsKey(DESCRIPTION)) {
             ((TextView) rootView.findViewById(R.id.et_amount)).setText(getArguments().getString(DESCRIPTION));
         }
         if (getArguments().containsKey(ARG_ITEM_ID)) {
             final String doc_name = getArguments().getString(ARG_ITEM_ID);
-            Helpers.
+            Firebase.
                     getExpenseReference(doc_name).
                     get(Source.CACHE).
                     addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -208,6 +208,10 @@ public class ExpenditureDetailFragment extends Fragment {
                     });
         }
         return rootView;
+    }
+
+    private void hideProgressBar() {
+        mProgressBar.setVisibility(View.GONE);
     }
 
     private void setDropDownAdapter(View root) {

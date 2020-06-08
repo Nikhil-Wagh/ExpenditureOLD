@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
+    android:background="@android:color/white"
     tools:context=".Home.HomeActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -23,34 +24,127 @@
             app:navigationIcon="@drawable/ic_person_white_24dp"
             app:title="Expenditure" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primary_light"
+            android:orientation="vertical"
+            android:padding="14dp">
+
+            <!--            <TextView-->
+            <!--                android:id="@+id/exOneYearText"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:textColor="@android:color/black"-->
+            <!--                android:textSize="24sp"-->
+            <!--                android:text="2019"-->
+            <!--                tools:text="2019" />-->
+
+            <TextView
+                android:id="@+id/calendarMonthText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:gravity="center"
+                android:text="April"
+                android:textColor="@android:color/black"
+                android:textSize="38sp"
+                tools:text="April" />
+
+        </LinearLayout>
+
     </com.google.android.material.appbar.AppBarLayout>
+
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/primary_light"
-        android:paddingBottom="8dp"
-        android:layout_above="@id/bottom_navigation"
-        android:layout_below="@id/app_bar"
+        android:layout_height="wrap_content"
+        android:paddingBottom="2dp"
         app:layout_anchorGravity="center"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/expense_list"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+            android:orientation="vertical">
 
-        </androidx.recyclerview.widget.RecyclerView>
+            <!--            <RelativeLayout-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content">-->
+
+            <!--                <com.google.android.material.textview.MaterialTextView-->
+            <!--                    android:id="@+id/tv_recent_expenditures"-->
+            <!--                    style="@style/tv_home_divider_header"-->
+            <!--                    android:text="Recent Expenditures"/>-->
+
+            <!--                <androidx.recyclerview.widget.RecyclerView-->
+            <!--                    android:id="@+id/rw_recent_expenses"-->
+            <!--                    android:layout_below="@id/tv_recent_expenditures"-->
+            <!--                    android:layout_width="match_parent"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:paddingBottom="8dp"-->
+            <!--                    tools:itemCount="3"-->
+            <!--                    tools:listitem="@layout/expenditure_list_content">-->
+            <!--                </androidx.recyclerview.widget.RecyclerView>-->
+            <!--            </RelativeLayout>-->
+
+            <!--            <RelativeLayout-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="match_parent" >-->
+
+            <!--                <TextView-->
+            <!--                    style="@style/tv_home_divider_header"-->
+            <!--                    android:text="Mode of Payment" />-->
+
+            <!--                <WebView-->
+            <!--                    android:layout_width="match_parent"-->
+            <!--                    android:layout_height="wrap_content" />-->
+            <!--            </RelativeLayout>-->
+
+            <include
+                layout="@layout/calendar_day_legend"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.kizitonwose.calendarview.CalendarView
+                android:id="@+id/calendarView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cv_dayViewResource="@layout/calendar_day_layout"
+                app:cv_orientation="horizontal"
+                app:cv_scrollMode="paged" />
+
+            <!--            <RelativeLayout-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content">-->
+
+            <!--                <com.google.android.material.textview.MaterialTextView-->
+            <!--                    android:id="@+id/tv_monthly_expenses"-->
+            <!--                    style="@style/tv_home_divider_header"-->
+            <!--                    android:text="Monthly Expenses"/>-->
+
+            <!--                <androidx.recyclerview.widget.RecyclerView-->
+            <!--                    android:id="@+id/rw_monthly_expenditures"-->
+            <!--                    android:layout_below="@id/tv_monthly_expenses"-->
+            <!--                    android:layout_width="match_parent"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:paddingBottom="8dp"-->
+            <!--                    tools:itemCount="10"-->
+            <!--                    tools:listitem="@layout/expenditure_list_content" />-->
+
+            <!--            </RelativeLayout>-->
+
+        </LinearLayout>
+
     </androidx.core.widget.NestedScrollView>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:menu="@menu/bottom_navigation_menu" />
+    <!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
+    <!--        android:id="@+id/bottom_navigation"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_gravity="bottom"-->
+    <!--        app:menu="@menu/bottom_navigation_menu" />-->
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

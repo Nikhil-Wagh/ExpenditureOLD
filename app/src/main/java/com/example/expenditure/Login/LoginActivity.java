@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.expenditure.Home.HomeActivity;
 import com.example.expenditure.R;
+import com.example.expenditure.Utility.Firebase;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -138,6 +139,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void getNewUserSnapshot(FirebaseFirestore db) {
         Map<String, String> meta_data = new HashMap<>();
+        meta_data.put("email", Firebase.getEmail());
         meta_data.put("username", firebaseAuth.getCurrentUser().getDisplayName());
         meta_data.put("device", android.os.Build.MODEL);
         try {
