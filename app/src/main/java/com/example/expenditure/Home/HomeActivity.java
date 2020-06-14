@@ -45,6 +45,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private CalendarView calendarView;
     private LocalDate selectedDate = null;
+    private LocalDate oldSelectedDate = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,62 +91,37 @@ public class HomeActivity extends AppCompatActivity {
             public void bind(DayViewContainer viewContainer, CalendarDay calendarDay) {
                 viewContainer.setDay(calendarDay);
                 viewContainer.setDateTextView(calendarDay.getDate().getDayOfMonth());
-
+//
                 if (calendarDay.getOwner() == DayOwner.THIS_MONTH) {
-                    viewContainer.makeTextViewVisible();
-//                    Log.d(TAG, "calendarDay="+calendarDay.getDate());
                     if (calendarDay.getDate().equals(today)) {
-                        viewContainer.updateUI(getResources().getColor(R.color.white));
+                        viewContainer.updateUI(getResources().getColor(R.color.white), getResources().getColor(R.color.color_today));
+//                    }
                     } else if (calendarDay.getDate() == selectedDate) {
-                        viewContainer.updateUI(getResources().getColor(R.color.black));
+                        viewContainer.updateUI(getResources().getColor(R.color.white), getResources().getColor(R.color.color_selected_bg));
                     } else {
-                        viewContainer.updateUI(getResources().getColor(R.color.black));
+                        viewContainer.updateUI(getResources().getColor(R.color.black), getResources().getColor(R.color.white));
                     }
                 } else {
-                    viewContainer.setTextColor(getResources().getColor(R.color.gray));
+                    viewContainer.updateUI(getResources().getColor(R.color.gray), getResources().getColor(R.color.white));
                 }
             }
         });
 
         YearMonth currentMonth = YearMonth.now();
-//        final String[] daysOfWeek = getResources().getStringArray(R.array.week_days);
         YearMonth startMonth = currentMonth.minusMonths(10);
         YearMonth endMonth = currentMonth.plusMonths(10);
         DayOfWeek firstDayOfWeek = WeekFields.of(Locale.getDefault()).getFirstDayOfWeek();
         calendarView.setup(startMonth, endMonth, firstDayOfWeek);
         calendarView.scrollToMonth(currentMonth);
 
-//        calendarView.setMonthHeaderBinder(new MonthHeaderFooterBinder<MonthlyViewContainer>() {
-//            @Override
-//            public MonthlyViewContainer create(View view) {
-//                return new MonthlyViewContainer(view);
-//            }
-//
-//            @Override
-//            public void bind(MonthlyViewContainer container, CalendarMonth calendarMonth) {
-//                if (container.legendLayout.getTag() == null) {
-//                    container.legendLayout.setTag(calendarMonth.getYearMonth());
-//                    for (int i = 0; i < container.legendLayout.getChildCount(); i++) {
-//                        TextView child = (TextView) container.legendLayout.getChildAt(i);
-//                        child.setText(daysOfWeek[i]);
-//                        child.setTextColor(getResources().getColor(R.color.black));
-//                    }
-//                }
-//            }
-//        });
-
-
         calendarView.setMonthScrollListener(new Function1<CalendarMonth, Unit>() {
             @Override
             public Unit invoke(CalendarMonth calendarMonth) {
                 Log.d(TAG, "monthScrollListener: " + calendarMonth);
-                selectDate(calendarMonth.getYearMonth().atDay(1));
                 updateMonthHeader(calendarMonth);
                 return Unit.INSTANCE;
             }
         });
-
-//        selectDate(today);
     }
 
     private void updateMonthHeader(CalendarMonth calendarMonth) {
@@ -155,18 +131,23 @@ public class HomeActivity extends AppCompatActivity {
         tvMonthHeader.setText(months[calendarMonth.getMonth() - 1]);
     }
 
-    private void monthScrollListener() {
-
-    }
-
     private void selectDate(LocalDate date) {
         if (selectedDate != date) {
-            calendarView.notifyDateChanged(date);
-            updateAdapterForDate(date);
+            oldSelectedDate = selectedDate;
             selectedDate = date;
+            if (oldSelectedDate != null)
+                calendarView.notifyDateChanged(oldSelectedDate);
+            calendarView.notifyDateChanged(selectedDate);
+//            updateAdapterForDate(date);
         }
         Log.d(TAG, "selectedDate=" + selectedDate);
     }
+
+//    private void deselectOldDate(LocalDate oldSelectedDate) {
+//        if (oldSelectedDate != null) {
+//
+//        }
+//    }
 
     private void updateAdapterForDate(LocalDate date) {
     }

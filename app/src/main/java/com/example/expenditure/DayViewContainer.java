@@ -1,5 +1,7 @@
 package com.example.expenditure;
 
+import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,6 +12,7 @@ import com.kizitonwose.calendarview.ui.ViewContainer;
 
 public class DayViewContainer extends ViewContainer {
 
+    private static final String TAG = "DayViewContainer";
     private TextView dateTextView;
     private CalendarDay day;
 
@@ -38,8 +41,13 @@ public class DayViewContainer extends ViewContainer {
         return this.day.getOwner();
     }
 
-    public void updateUI(int textColor) {
+    public void updateUI(int textColor, int backgroundColor) {
         dateTextView.setTextColor(textColor);
+        GradientDrawable background = (GradientDrawable) dateTextView.getBackground();
+        if (background != null)
+            background.setColor(backgroundColor);
+        else
+            Log.e(TAG, "background is null");
     }
 
     public void makeTextViewInVisible() {
