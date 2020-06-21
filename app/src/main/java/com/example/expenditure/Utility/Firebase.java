@@ -1,9 +1,13 @@
 package com.example.expenditure.Utility;
 
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.expenditure.History.ExpenditureDetailActivity;
+import com.example.expenditure.History.ExpenditureDetailFragment;
 import com.example.expenditure.NewExpense.Expense;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.Timestamp;
@@ -66,22 +70,6 @@ public class Firebase {
         return getCurrentUser().getEmail();
     }
 
-    View.OnClickListener expendituresOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Toast.makeText(view.getContext(), "Item Clicked", Toast.LENGTH_SHORT).show();
-//                Expense item = (Expense) view.getTag();
-//                if (item == null) {
-//                    Log.e(TAG, "Firebase:: item null");
-//                    // TODO: Think of something better here
-//                }
-//                Context context = view.getContext();
-//                Intent intent = new Intent(context, ExpenditureDetailActivity.class);
-//                intent.putExtra(ExpenditureDetailFragment.ARG_ITEM_ID, item.getDocumentName());
-//                context.startActivity(intent);
-        }
-    };
-
     public static FirestoreRecyclerOptions<Expense> getOptions(Query query) {
         FirestoreRecyclerOptions<Expense> options = new FirestoreRecyclerOptions.Builder<Expense>()
                 .setQuery(query, Expense.class)
@@ -94,15 +82,15 @@ public class Firebase {
             @Override
             public void onClick(View view) {
                 Toast.makeText(view.getContext(), "Item Clicked", Toast.LENGTH_SHORT).show();
-//                Expense item = (Expense) view.getTag();
-//                if (item == null) {
-//                    Log.e(TAG, "Firebase:: item null");
-//                    // TODO: Think of something better here
-//                }
-//                Context context = view.getContext();
-//                Intent intent = new Intent(context, ExpenditureDetailActivity.class);
-//                intent.putExtra(ExpenditureDetailFragment.ARG_ITEM_ID, item.getDocumentName());
-//                context.startActivity(intent);
+                Expense item = (Expense) view.getTag();
+                if (item == null) {
+                    Log.e(TAG, "Firebase:: item null");
+                    // TODO: Think of something better here
+                }
+                Context context = view.getContext();
+                Intent intent = new Intent(context, ExpenditureDetailActivity.class);
+                intent.putExtra(ExpenditureDetailFragment.ARG_ITEM_ID, item.getDocumentName());
+                context.startActivity(intent);
             }
         };
         return expendituresOnClickListener;

@@ -83,7 +83,7 @@ public class HomeActivity extends AppCompatActivity {
         setupRecyclerView();
         setupCalendar();
 //        Need to improve this
-//        setupBottomNavbar();
+        setupBottomNavbar();
     }
 
     private void setupViews() {
