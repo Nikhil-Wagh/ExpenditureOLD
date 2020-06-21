@@ -221,7 +221,7 @@ public class ExpenditureDetailFragment extends Fragment {
         editTextPaymentMode.setAdapter(adapter);
     }
 
-    public Calendar setDateTimeFromPicker() {
+    public void setDateTimeFromPicker() {
         final Calendar date;
         final Calendar currentDate = Calendar.getInstance();
         date = Calendar.getInstance();
@@ -239,7 +239,7 @@ public class ExpenditureDetailFragment extends Fragment {
                 }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), false).show();
             }
         }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
-        return date;
+
     }
 
     private void initInputFields(View root) {

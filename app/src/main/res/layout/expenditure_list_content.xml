@@ -66,6 +66,7 @@
                     android:layout_height="wrap_content"
                     android:text="timestamp"
                     android:textSize="10sp"
+                    android:textStyle="italic"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

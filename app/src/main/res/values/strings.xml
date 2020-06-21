@@ -72,4 +72,5 @@
     <string name="notifications">Notifications</string>
     <string name="content_description_more">Notifications of recent expenses</string>
     <string name="default_user_name">User</string>
+    <string name="no_expenses_for_this_date">No Expenses for this date</string>
 </resources>

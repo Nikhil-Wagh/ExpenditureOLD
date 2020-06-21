@@ -1,27 +1,22 @@
 package com.example.expenditure.Utility;
 
-import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
-import com.example.expenditure.History.ExpenditureDetailActivity;
-import com.example.expenditure.History.ExpenditureDetailFragment;
 import com.example.expenditure.NewExpense.Expense;
-import com.example.expenditure.NewExpense.ExpenseViewHolder;
-import com.example.expenditure.R;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+
+import org.threeten.bp.LocalDate;
+
+import java.util.GregorianCalendar;
 
 public class Firebase {
 
@@ -71,60 +66,66 @@ public class Firebase {
         return getCurrentUser().getEmail();
     }
 
-    public static FirestoreRecyclerAdapter getExpensesRecyclerViewAdapter(Query query) {
+    View.OnClickListener expendituresOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Toast.makeText(view.getContext(), "Item Clicked", Toast.LENGTH_SHORT).show();
+//                Expense item = (Expense) view.getTag();
+//                if (item == null) {
+//                    Log.e(TAG, "Firebase:: item null");
+//                    // TODO: Think of something better here
+//                }
+//                Context context = view.getContext();
+//                Intent intent = new Intent(context, ExpenditureDetailActivity.class);
+//                intent.putExtra(ExpenditureDetailFragment.ARG_ITEM_ID, item.getDocumentName());
+//                context.startActivity(intent);
+        }
+    };
+
+    public static FirestoreRecyclerOptions<Expense> getOptions(Query query) {
         FirestoreRecyclerOptions<Expense> options = new FirestoreRecyclerOptions.Builder<Expense>()
                 .setQuery(query, Expense.class)
                 .build();
+        return options;
+    }
 
-        final View.OnClickListener expendituresOnClickListener = new View.OnClickListener() {
+    public static View.OnClickListener expendituresOnClickListener() {
+        View.OnClickListener expendituresOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Expense item = (Expense) view.getTag();
-                if (item == null) {
-                    // TODO: Think of something better here
-                }
-                Context context = view.getContext();
-                Intent intent = new Intent(context, ExpenditureDetailActivity.class);
-                intent.putExtra(ExpenditureDetailFragment.ARG_ITEM_ID, item.getDocumentName());
-                context.startActivity(intent);
+                Toast.makeText(view.getContext(), "Item Clicked", Toast.LENGTH_SHORT).show();
+//                Expense item = (Expense) view.getTag();
+//                if (item == null) {
+//                    Log.e(TAG, "Firebase:: item null");
+//                    // TODO: Think of something better here
+//                }
+//                Context context = view.getContext();
+//                Intent intent = new Intent(context, ExpenditureDetailActivity.class);
+//                intent.putExtra(ExpenditureDetailFragment.ARG_ITEM_ID, item.getDocumentName());
+//                context.startActivity(intent);
             }
         };
-
-        return new FirestoreRecyclerAdapter<Expense, ExpenseViewHolder>(options) {
-
-            @NonNull
-            @Override
-            public ExpenseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                Log.d(TAG, "onCreateViewHolder called");
-                LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-                View view = layoutInflater.inflate(R.layout.expenditure_list_content, parent, false);
-                return new ExpenseViewHolder(view);
-            }
-
-            @Override
-            protected void onBindViewHolder(@NonNull final ExpenseViewHolder expenseViewHolder, int position, @NonNull final Expense expense) {
-                Log.d(TAG, "onBindViewHolder position = " + position);
-                expense.setDocumentName(getSnapshots().getSnapshot(position).getId());
-                expenseViewHolder.setAmount(expense.getAmount());
-                expenseViewHolder.setDescription(expense.getDescription());
-                expenseViewHolder.setTimestamp(expense.getTimestamp());
-                expenseViewHolder.itemView.setTag(expense);
-                expenseViewHolder.itemView.setOnClickListener(expendituresOnClickListener);
-            }
-        };
+        return expendituresOnClickListener;
     }
 
-    public static CollectionReference monthlySummary(String year, String month) {
-        return FirebaseFirestore.
-                getInstance().
-                collection("users").
-                document(getUserId()).
-                collection("monthly_summary")
-                .document(year)
-                .collection(month);
+    public static Query selectSummaryForDate(LocalDate date) {
+        Timestamp currentDay = getTimestamp(date);
+        Log.d(TAG, "currentDay=" + currentDay);
+
+        Timestamp nextDay = getTimestamp(date.plusDays(1));
+        Log.d(TAG, "nextDay=" + nextDay);
+
+        Query query = Firebase
+                .expenses()
+                .orderBy("timestamp")
+                .whereGreaterThanOrEqualTo("timestamp", currentDay)
+                .whereLessThan("timestamp", nextDay);
+        return query;
     }
 
-    public static FirestoreRecyclerAdapter getMonthlySummaryRecyclerViewAdapter(Query query) {
-        return null;
+    public static Timestamp getTimestamp(LocalDate date) {
+        int secInDay = 86400;
+        int offset = new GregorianCalendar().getTimeZone().getRawOffset() / (1000);
+        return new Timestamp(date.toEpochDay() * secInDay - offset, 0);
     }
 }
